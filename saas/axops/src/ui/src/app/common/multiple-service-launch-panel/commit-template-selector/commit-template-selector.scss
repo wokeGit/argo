@@ -47,20 +47,80 @@
         border-radius: $border-radius;
     }
 
+    &__body {
+        margin: 0 10px 20px 10px;
+    }
+
     &__help-icon {
         line-height: 65px;
         margin-right: 20px;
+
+        a {
+            font-size: 14px;
+        }
 
         i {
             font-size: 21px;
         }
     }
 
-    &__search {
+    &__search-input {
+        width: 200px;
+        position: relative;
+        padding: 0 20px 0 20px;
+        background-color: $ax-color-gray-2;
+        border-radius: 22px;
+        margin: 10px;
 
+        input {
+            width: 100%;
+            height: 36px;
+            font-size: 14px;
+            padding: 6px 20px 6px 12px;
+            color: $ax-color-gray-7;
+            background-color: transparent;
+            border: 0;
+        }
+
+        i {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            right: 20px;
+            color: $ax-color-gray-5;
+        }
+    }
+
+    &__search {
+        height: 60px;
+        border-bottom: 1px solid $ax-color-gray-3;
+
+        h4 {
+            font-size: 20px;
+            font-weight: 300;
+            color: $ax-color-teal-7;
+            display: inline;
+            line-height: 60px;
+            padding-left: 15px;
+        }
     }
 
     &__prompt {
+        height: 60px;
+        background-color: $ax-color-teal-1;
+        color: $ax-color-gray-6;
+        border-bottom: 1px solid $ax-color-gray-3;
 
+        h4 {
+            font-weight: bold;
+            font-size: 14px;
+            padding: 10px 20px 1px 20px;
+            margin-bottom: 0;
+        }
+
+        p {
+            font-size: 12px;
+            margin: 0 20px 15px 20px;
+        }
     }
 }
