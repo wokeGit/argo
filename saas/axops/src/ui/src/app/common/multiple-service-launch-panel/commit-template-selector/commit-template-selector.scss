@@ -1,0 +1,66 @@
+@import '../../../../assets/styles/config';
+
+.commit-template-selector {
+    &__table {
+        background-color: white;
+        border-radius: $border-radius;
+    }
+
+    &__header {
+        border-top-right-radius: $border-radius;
+        border-top-left-radius: $border-radius;
+        background-color: $ax-color-teal-1;
+        border-bottom: 1px solid $ax-color-gray-2;
+
+        ul {
+            display: inline;
+            list-style-type: none;
+            border-top-right-radius: $border-radius;
+            border-top-left-radius: $border-radius;
+            line-height: 60px;
+            font-size: 15px;
+
+            li {
+                display: inline;
+
+                &:after {
+                    content: ' /';
+                    font-size: 30px;
+                    font-weight: 100;
+                    color: $ax-color-gray-4;
+                    margin-left: 3px;
+                }
+
+                &:last-child:after {
+                    content: ''
+                }
+            }
+
+        }
+    }
+
+    &__header-out-browse {
+        border-radius: $border-radius;
+    }
+
+    &__header-on-browse {
+        border-radius: $border-radius;
+    }
+
+    &__help-icon {
+        line-height: 65px;
+        margin-right: 20px;
+
+        i {
+            font-size: 21px;
+        }
+    }
+
+    &__search {
+
+    }
+
+    &__prompt {
+
+    }
+}

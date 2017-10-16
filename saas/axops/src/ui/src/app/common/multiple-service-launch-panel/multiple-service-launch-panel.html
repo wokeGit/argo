@@ -24,86 +24,89 @@
                 <div class="panel-box__subtitle">
                     Select templates and click Next to review the parameters.
                 </div>
-                <div class="panel-box__description">
-                    <div class="row">
-                        <div class="columns small-3"><h5>Commit:</h5></div>
-                        <div class="columns small-9"><p>{{ commit.revision }}</p></div>
-                    </div>
-                    <div class="row">
-                        <div class="columns small-3"><h5>Repo/Branch:</h5></div>
-                        <div class="columns small-9">
-                            <p>
-                                <span>{{ selcetedRepo + '/'}}</span>
-                                <span *ngIf="isBranchEditable">{{selectedBranch}}</span>
-                                <span *ngIf="!isBranchEditable">
-                                    <ax-dropdown [isMenu]="true" #branchDropdown>
-                                        <ax-dropdown-anchor>
-                                            <a>{{selectedBranch}} <i class="fa fa-pencil" aria-hidden="true"></i></a>
-                                        </ax-dropdown-anchor>
-                                        <ax-dropdown-content>
-                                            <ul>
-                                                <li *ngFor="let branch of commit.branches" (click)="selectBranch(branch);branchDropdown.close()">
-                                                    <i class="ax-icon-branch"></i> {{branch}}
-                                                </li>
-                                            </ul>
-                                        </ax-dropdown-content>
-                                    </ax-dropdown>
-                                </span>
-                                <span class="panel-box__inline-action" (click)="editRepoBranch()" *ngIf="isBranchEditable">
-                                    <a><i class="fa fa-pencil" aria-hidden="true"></i></a>
-                                </span>
-                            </p>
-                        </div>
-                    </div>
+                <div class="">
+                    <ax-commit-template-selector></ax-commit-template-selector>
                 </div>
-                <h3>Templates</h3>
-                <div class="panel-box__service-templates">
-                    <div class="panel-box__search-input-bg">
-                        <div class="panel-box__search-input">
-                            <i class="fa fa-search"></i> <input type="text" [(ngModel)]="search" placeholder="Search">
-                        </div>
-                    </div>
-                    <table class="ax-table ax-table--light" *ngIf="templates">
-                        <thead>
-                        <tr class="header">
-                            <th width="60px">
-                                <div class="ax-checkbox">
-                                    <input type="checkbox" (change)="selectAllTemplates()" [checked]="allSelected" [disabled]="templateLoader">
-                                    <span><i class="fa fa-check"></i></span>
-                                </div>
-                            </th>
-                            <th width="30%">{{'Name' | translate | uppercase}}</th>
-                            <th width="55%">{{'Description' | translate | uppercase}}</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <template ngFor let-template [ngForOf]="(templates | axFilterBy: search:'name')" let-i="index">
-                            <tr [ngClass]="{'selected': template.selected}">
-                                <td>
-                                    <div class="ax-checkbox">
-                                        <input type="checkbox" id="isSelected" (change)="selectTemplate(template)"
-                                               [checked]="template.selected"><span><i class="fa fa-check"></i></span>
-                                    </div>
-                                </td>
-                                <td [ax-highlight-substring]="searchString">
-                                    <strong>
-                                        <span ax-tooltip="{{template.name}}">{{template.name}}</span>
-                                    </strong>
-                                </td>
-                                <td [ax-highlight-substring]="searchString">
-                                    <span ax-tooltip="{{template.description}}">{{ template.description | truncateTo: 50}}</span>
-                                </td>
-                            </tr>
-                        </template>
-                        <tr *ngIf="!templates.length">
-                            <td colspan="3" class="ax-table--center">
-                                <ax-loader-custom [size]="20" *ngIf="templateLoader"></ax-loader-custom>
-                                <span *ngIf="!templateLoader">{{ 'There are no templates to display for selected commit.' | translate }}</span>
-                            </td>
-                        </tr>
-                        </tbody>
-                    </table>
-                </div>
+                <!--<div class="panel-box__description">-->
+                    <!--<div class="row">-->
+                        <!--<div class="columns small-3"><h5>Commit:</h5></div>-->
+                        <!--<div class="columns small-9"><p>{{ commit.revision }}</p></div>-->
+                    <!--</div>-->
+                    <!--<div class="row">-->
+                        <!--<div class="columns small-3"><h5>Repo/Branch:</h5></div>-->
+                        <!--<div class="columns small-9">-->
+                            <!--<p>-->
+                                <!--<span>{{ selcetedRepo + '/'}}</span>-->
+                                <!--<span *ngIf="isBranchEditable">{{selectedBranch}}</span>-->
+                                <!--<span *ngIf="!isBranchEditable">-->
+                                    <!--<ax-dropdown [isMenu]="true" #branchDropdown>-->
+                                        <!--<ax-dropdown-anchor>-->
+                                            <!--<a>{{selectedBranch}} <i class="fa fa-pencil" aria-hidden="true"></i></a>-->
+                                        <!--</ax-dropdown-anchor>-->
+                                        <!--<ax-dropdown-content>-->
+                                            <!--<ul>-->
+                                                <!--<li *ngFor="let branch of commit.branches" (click)="selectBranch(branch);branchDropdown.close()">-->
+                                                    <!--<i class="ax-icon-branch"></i> {{branch}}-->
+                                                <!--</li>-->
+                                            <!--</ul>-->
+                                        <!--</ax-dropdown-content>-->
+                                    <!--</ax-dropdown>-->
+                                <!--</span>-->
+                                <!--<span class="panel-box__inline-action" (click)="editRepoBranch()" *ngIf="isBranchEditable">-->
+                                    <!--<a><i class="fa fa-pencil" aria-hidden="true"></i></a>-->
+                                <!--</span>-->
+                            <!--</p>-->
+                        <!--</div>-->
+                    <!--</div>-->
+                <!--</div>-->
+                <!--<h3>Templates</h3>-->
+                <!--<div class="panel-box__service-templates">-->
+                    <!--<div class="panel-box__search-input-bg">-->
+                        <!--<div class="panel-box__search-input">-->
+                            <!--<i class="fa fa-search"></i> <input type="text" [(ngModel)]="search" placeholder="Search">-->
+                        <!--</div>-->
+                    <!--</div>-->
+                    <!--<table class="ax-table ax-table&#45;&#45;light" *ngIf="templates">-->
+                        <!--<thead>-->
+                        <!--<tr class="header">-->
+                            <!--<th width="60px">-->
+                                <!--<div class="ax-checkbox">-->
+                                    <!--<input type="checkbox" (change)="selectAllTemplates()" [checked]="allSelected" [disabled]="templateLoader">-->
+                                    <!--<span><i class="fa fa-check"></i></span>-->
+                                <!--</div>-->
+                            <!--</th>-->
+                            <!--<th width="30%">{{'Name' | translate | uppercase}}</th>-->
+                            <!--<th width="55%">{{'Description' | translate | uppercase}}</th>-->
+                        <!--</tr>-->
+                        <!--</thead>-->
+                        <!--<tbody>-->
+                        <!--<template ngFor let-template [ngForOf]="(templates | axFilterBy: search:'name')" let-i="index">-->
+                            <!--<tr [ngClass]="{'selected': template.selected}">-->
+                                <!--<td>-->
+                                    <!--<div class="ax-checkbox">-->
+                                        <!--<input type="checkbox" id="isSelected" (change)="selectTemplate(template)"-->
+                                               <!--[checked]="template.selected"><span><i class="fa fa-check"></i></span>-->
+                                    <!--</div>-->
+                                <!--</td>-->
+                                <!--<td [ax-highlight-substring]="searchString">-->
+                                    <!--<strong>-->
+                                        <!--<span ax-tooltip="{{template.name}}">{{template.name}}</span>-->
+                                    <!--</strong>-->
+                                <!--</td>-->
+                                <!--<td [ax-highlight-substring]="searchString">-->
+                                    <!--<span ax-tooltip="{{template.description}}">{{ template.description | truncateTo: 50}}</span>-->
+                                <!--</td>-->
+                            <!--</tr>-->
+                        <!--</template>-->
+                        <!--<tr *ngIf="!templates.length">-->
+                            <!--<td colspan="3" class="ax-table&#45;&#45;center">-->
+                                <!--<ax-loader-custom [size]="20" *ngIf="templateLoader"></ax-loader-custom>-->
+                                <!--<span *ngIf="!templateLoader">{{ 'There are no templates to display for selected commit.' | translate }}</span>-->
+                            <!--</td>-->
+                        <!--</tr>-->
+                        <!--</tbody>-->
+                    <!--</table>-->
+                <!--</div>-->
             </div>
         </div>
 

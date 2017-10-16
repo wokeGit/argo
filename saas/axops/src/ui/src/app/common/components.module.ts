@@ -64,6 +64,7 @@ import { AutocompleteOffDirective } from './autocomplete-off/autocomplete-off.di
 import { RedirectPanelComponent } from './redirect-panel/redirect-panel.component';
 import { ApplicationStatusComponent } from './application-status/application-status.component';
 import { ArtifactsComponent } from './artifacts/artifacts.component';
+import { CommitTemplateSelectorComponent } from './multiple-service-launch-panel/commit-template-selector/commit-template-selector.component';
 
 let components: any[] = [
     AccessMarkComponent,
@@ -121,6 +122,7 @@ let components: any[] = [
     RedirectPanelComponent,
     ApplicationStatusComponent,
     ArtifactsComponent,
+    CommitTemplateSelectorComponent,
 ];
 
 @NgModule({

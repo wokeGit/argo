@@ -1,0 +1,64 @@
+<div class="commit-template-selector__table">
+    <div class="commit-template-selector__header">
+        <div class="commit-template-selector__header-out-browse" *ngIf="true">
+            <ul>
+                <li>argo.git</li>
+                <li>master</li>
+                <li>asdfasdfsadfasdfsdfdsf4rt245t3456tyg5</li>
+                <li>Templates</li>
+            </ul>
+            <div class="fr commit-template-selector__help-icon">
+                <a ><i class="ax-icon-edit-property"></i> {{ 'Browse'| translate | uppercase }}</a>
+            </div>
+        </div>
+        <div class="commit-template-selector__header-on-browse" *ngIf="false">
+            <div class="fr commit-template-selector__help-icon">
+                <i class="ax-icon-close"></i>
+            </div>
+        </div>
+    </div>
+    <div class="commit-template-selector__search">
+        <div class="">
+
+        </div>
+    </div>
+    <div class="commit-template-selector__prompt">
+        <div class=""></div>
+    </div>
+    <div class="">
+        <!--<table class="ax-table ax-table&#45;&#45;light ax-table&#45;&#45;no-background">-->
+            <!--<thead>-->
+            <!--<tr class="header">-->
+                <!--<th width="60px">-->
+                    <!--<div class="ax-checkbox">-->
+                        <!--<input type="checkbox" (change)="selectAllTemplates()" [checked]="allSelected" [disabled]="templateLoader">-->
+                        <!--<span><i class="fa fa-check"></i></span>-->
+                    <!--</div>-->
+                <!--</th>-->
+                <!--<th width="30%">{{'Name' | translate | uppercase}}</th>-->
+                <!--<th width="55%">{{'Description' | translate | uppercase}}</th>-->
+            <!--</tr>-->
+            <!--</thead>-->
+            <!--<tbody>-->
+            <!--<template ngFor let-template [ngForOf]="(templates | axFilterBy: search:'name')" let-i="index">-->
+                <!--<tr [ngClass]="{'selected': template.selected}">-->
+                    <!--<td>-->
+                        <!--<div class="ax-checkbox">-->
+                            <!--<input type="checkbox" id="isSelected" (change)="selectTemplate(template)"-->
+                                   <!--[checked]="template.selected"><span><i class="fa fa-check"></i></span>-->
+                        <!--</div>-->
+                    <!--</td>-->
+                    <!--<td [ax-highlight-substring]="searchString">-->
+                        <!--<strong>-->
+                            <!--<span ax-tooltip="{{template.name}}">{{template.name}}</span>-->
+                        <!--</strong>-->
+                    <!--</td>-->
+                    <!--<td [ax-highlight-substring]="searchString">-->
+                        <!--<span ax-tooltip="{{template.description}}">{{ template.description | truncateTo: 50}}</span>-->
+                    <!--</td>-->
+                <!--</tr>-->
+            <!--</template>-->
+            <!--</tbody>-->
+        <!--</table>-->
+    </div>
+</div>
