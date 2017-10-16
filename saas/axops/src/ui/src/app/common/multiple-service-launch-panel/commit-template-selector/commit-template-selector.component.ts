@@ -15,10 +15,6 @@ export class CommitTemplateSelectorComponent implements OnInit {
     public selectorSteps: any  = {
         repositories: {
             isActive: true,
-            active: {
-                name: '',
-                url: '',
-            },
             messages: {
                 title: 'Select a repo',
                 searchInputPlaceholder: 'Search repo'
@@ -27,7 +23,7 @@ export class CommitTemplateSelectorComponent implements OnInit {
         },
         branches: {
             isActive: false,
-            active: {
+            selectedRepo: {
                 name: '',
                 url: '',
             },
@@ -39,7 +35,7 @@ export class CommitTemplateSelectorComponent implements OnInit {
         },
         commits: {
             isActive: false,
-            active: {
+            selectedBranch: {
                 name: '',
                 url: '',
             },
@@ -51,7 +47,7 @@ export class CommitTemplateSelectorComponent implements OnInit {
         },
         templates: {
             isActive: false,
-            active: {
+            selectedCommit: {
                 name: '',
                 url: '',
             },

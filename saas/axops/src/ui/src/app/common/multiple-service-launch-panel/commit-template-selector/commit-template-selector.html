@@ -41,7 +41,7 @@
                     </div>
                 </div>
             </div>
-            <div class="commit-template-selector__prompt">
+            <div class="commit-template-selector__prompt" *ngIf="!selectorSteps.repositories.isActive">
                 <h4>argo.git</h4>
                 <p>https://github.com/argoproj/argo.git</p>
             </div>
