@@ -1,8 +1,10 @@
 import * as _ from 'lodash';
-import { Component, OnInit } from '@angular/core';
-import { RepoService } from '../../../services';
+import { Component, OnInit, Input } from '@angular/core';
 
-import { Template } from '../../../model';
+import { RepoService } from '../../../services';
+import { SortOperations } from '../../../common';
+
+import { Template, Commit } from '../../../model';
 
 type SelectorParts = 'repositories' | 'branches' | 'commits' | 'templates';
 
@@ -15,6 +17,7 @@ export class CommitTemplateSelectorComponent implements OnInit {
     public selectorSteps: any  = {
         repositories: {
             isActive: true,
+            search: '',
             messages: {
                 title: 'Select a repo',
                 searchInputPlaceholder: 'Search repo'
@@ -23,7 +26,8 @@ export class CommitTemplateSelectorComponent implements OnInit {
         },
         branches: {
             isActive: false,
-            selectedRepo: {
+            search: '',
+            selectedParent: { // selected repositories
                 name: '',
                 url: '',
             },
@@ -35,7 +39,8 @@ export class CommitTemplateSelectorComponent implements OnInit {
         },
         commits: {
             isActive: false,
-            selectedBranch: {
+            search: '',
+            selectedParent: { // selected branch
                 name: '',
                 url: '',
             },
@@ -47,7 +52,8 @@ export class CommitTemplateSelectorComponent implements OnInit {
         },
         templates: {
             isActive: false,
-            selectedCommit: {
+            search: '',
+            selectedParent: { // selected commit
                 name: '',
                 url: '',
             },
@@ -58,37 +64,45 @@ export class CommitTemplateSelectorComponent implements OnInit {
             items: []
         }
     };
+
+    @Input()
+    set commit(c: Commit) {
+        if (c.revision && c.repo && c.branch) {
+            this.selectorSteps.branches.selectedParent = this.splitRepository([c.repo])[0];
+            this.selectorSteps.commits.selectedParent.name = c.branch;
+            this.selectorSteps.templates.selectedParent.name = c.revision;
+        }
+    }
+
     public activePart: SelectorParts = 'repositories';
 
     constructor(private repoService: RepoService) {
     }
 
     ngOnInit() {
-        this.repoService.getReposAsync().toPromise().then(res => {
-            let repositories = _.map(res.data, (repo: string) => {
-                let repoSplit = repo.split('/');
-
-                return {
-                    name: repoSplit[repoSplit.length - 1],
-                    url: repo
-                };
-            }).sort((a, b) => {
-                if (a.name.toLowerCase() < b.name.toLowerCase()) {
-                    return -1;
-                }
-                if (a.name.toLowerCase() > b.name.toLowerCase()) {
-                    return 1;
-                }
-                return 0;
-            });
-
-            this.selectorSteps.repositories.items = repositories;
-            console.log('repos', res, repositories);
-        });
     }
 
-    public onBrowse() {
+    public async onBrowse() {
+        if (this.selectorSteps.repositories.items.length === 0) {
+            await this.getRepos();
+            this.selectRepoByUrl(this.selectorSteps.branches.selectedParent.url);
+        }
+    }
 
+    public changeStep(stepName: SelectorParts) {
+        this.setActiveStep(stepName);
+
+        switch (stepName) {
+            case 'branches':
+                // TODO
+                break;
+            case 'commits':
+                // TODO
+                break;
+            case 'templates':
+                // TODO
+                break;
+        }
     }
 
     public setActiveStep(stepName: SelectorParts) {
@@ -99,5 +113,45 @@ export class CommitTemplateSelectorComponent implements OnInit {
         this.selectorSteps.templates.isActive = false;
 
         this.selectorSteps[stepName].isActive = true;
+    }
+
+    public selectRepo(repo: { name: string, url: string, selected: boolean }) {
+        this.selectorSteps.branches.selectedParent = {
+            name: repo.name,
+            url: repo.url
+        };
+
+        this.selectorSteps.repositories.items.map((repository) => {
+            repository.selected = false;
+            return repository;
+        });
+        repo.selected = true;
+    }
+
+    public selectRepoByUrl(url: string) {
+        this.selectorSteps.repositories.items.forEach(item => {
+            if (item.url === url) {
+                item.selected = true;
+            }
+        });
+    }
+
+    private async getRepos() {
+        await this.repoService.getReposAsync().toPromise().then(res => {
+            let repositories: { name: string, url: string, selected: boolean }[] = this.splitRepository(res.data);
+            this.selectorSteps.repositories.items = SortOperations.sortBy(repositories, 'name');
+        });
+    }
+
+    private splitRepository(repos: string []): { name: string, url: string, selected: boolean }[] {
+        return repos.map((item: string) => {
+            let repoSplit = item.split('/');
+
+            return {
+                name: repoSplit[repoSplit.length - 1],
+                url: item,
+                selected: false
+            };
+        });
     }
 }

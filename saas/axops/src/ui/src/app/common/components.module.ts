@@ -65,6 +65,8 @@ import { RedirectPanelComponent } from './redirect-panel/redirect-panel.componen
 import { ApplicationStatusComponent } from './application-status/application-status.component';
 import { ArtifactsComponent } from './artifacts/artifacts.component';
 import { CommitTemplateSelectorComponent } from './multiple-service-launch-panel/commit-template-selector/commit-template-selector.component';
+import { RepoTableComponent } from './multiple-service-launch-panel/commit-template-selector/repo-table/repo-table.component';
+import { BranchTableComponent } from './multiple-service-launch-panel/commit-template-selector/branch-table/branch-table.component';
 
 let components: any[] = [
     AccessMarkComponent,
@@ -123,6 +125,8 @@ let components: any[] = [
     ApplicationStatusComponent,
     ArtifactsComponent,
     CommitTemplateSelectorComponent,
+    RepoTableComponent,
+    BranchTableComponent,
 ];
 
 @NgModule({

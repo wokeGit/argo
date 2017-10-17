@@ -2,28 +2,28 @@
     <div class="commit-template-selector__header">
         <div class="commit-template-selector__header-out-browse" *ngIf="!isBrowseVisible">
             <ul>
-                <li>argo.git</li>
-                <li>master</li>
-                <li>asdfasdfsadfasdfsdfdsf4rt245t3456tyg5</li>
+                <li>{{ selectorSteps.branches.selectedParent.name }}</li>
+                <li>{{ selectorSteps.commits.selectedParent.name }}</li>
+                <li>{{ selectorSteps.templates.selectedParent.name }}</li>
                 <li>Templates</li>
             </ul>
             <div class="fr commit-template-selector__help-icon">
-                <a (click)="isBrowseVisible = !isBrowseVisible"><i class="ax-icon-edit-property"></i> {{ 'Browse'| translate | uppercase }}</a>
+                <a (click)="onBrowse(); isBrowseVisible = !isBrowseVisible"><i class="ax-icon-edit-property"></i> {{ 'Browse'| translate | uppercase }}</a>
             </div>
         </div>
         <div class="commit-template-selector__header-on-browse" *ngIf="isBrowseVisible">
             <ul>
                 <li>
-                    <button axButtonWave class="ax-button" [ngClass]="{'ax-button--base': selectorSteps.repositories.isActive}" (click)="setActiveStep('repositories')">REPO</button>
+                    <button axButtonWave class="ax-button" [ngClass]="{'ax-button--base': selectorSteps.repositories.isActive}" (click)="changeStep('repositories')">REPO</button>
                 </li>
                 <li>
-                    <button axButtonWave class="ax-button" [ngClass]="{'ax-button--base': selectorSteps.branches.isActive}" (click)="setActiveStep('branches')">BRANCH</button>
+                    <button axButtonWave class="ax-button" [ngClass]="{'ax-button--base': selectorSteps.branches.isActive}" (click)="changeStep('branches')">BRANCH</button>
                 </li>
                 <li>
-                    <button axButtonWave class="ax-button" [ngClass]="{'ax-button--base': selectorSteps.commits.isActive}" (click)="setActiveStep('commits')">COMMIT</button>
+                    <button axButtonWave class="ax-button" [ngClass]="{'ax-button--base': selectorSteps.commits.isActive}" (click)="changeStep('commits')">COMMIT</button>
                 </li>
                 <li>
-                    <button axButtonWave class="ax-button" [ngClass]="{'ax-button--base': selectorSteps.templates.isActive}" (click)="setActiveStep('templates')">TEMPLATES</button>
+                    <button axButtonWave class="ax-button" [ngClass]="{'ax-button--base': selectorSteps.templates.isActive}" (click)="changeStep('templates')">TEMPLATES</button>
                 </li>
             </ul>
             <div class="fr commit-template-selector__help-icon">
@@ -37,50 +37,71 @@
                 <h4>{{ selectorSteps[activePart].messages.title }}</h4>
                 <div class="fr">
                     <div class="commit-template-selector__search-input">
-                        <i class="fa fa-search"></i> <input type="text" [(ngModel)]="search" placeholder="{{ selectorSteps[activePart].messages.searchInputPlaceholder }}">
+                        <i class="fa fa-search"></i> <input type="text" [(ngModel)]="selectorSteps[activePart].search" placeholder="{{ selectorSteps[activePart].messages.searchInputPlaceholder }}">
                     </div>
                 </div>
             </div>
             <div class="commit-template-selector__prompt" *ngIf="!selectorSteps.repositories.isActive">
-                <h4>argo.git</h4>
-                <p>https://github.com/argoproj/argo.git</p>
+                <h4>{{ selectorSteps[activePart].selectedParent.name }}</h4>
+                <p>{{ selectorSteps[activePart].selectedParent.url }}</p>
             </div>
         </div>
         <div class="">
-            <table class="ax-table ax-table--light ax-table--no-background">
-                <thead>
-                <tr class="header">
-                    <th width="60px">
-                        <div class="ax-checkbox">
-                            <input type="checkbox" (change)="selectAllTemplates()" [checked]="allSelected" [disabled]="templateLoader">
-                            <span><i class="fa fa-check"></i></span>
-                        </div>
-                    </th>
-                    <th width="30%">{{'Name' | translate | uppercase}}</th>
-                    <th width="55%">{{'Description' | translate | uppercase}}</th>
-                </tr>
-                </thead>
-                <tbody>
-                <template ngFor let-template [ngForOf]="(selectorSteps[activePart].items | axFilterBy: search:'name')" let-i="index">
-                    <tr [ngClass]="{'selected': template.selected}">
-                        <td>
-                            <div class="ax-checkbox">
-                                <input type="checkbox" id="isSelected" (change)="selectTemplate(template)"
-                                       [checked]="template.selected"><span><i class="fa fa-check"></i></span>
-                            </div>
-                        </td>
-                        <td [ax-highlight-substring]="searchString">
-                            <strong>
-                                <span ax-tooltip="{{template.name}}">{{template.name}}</span>
-                            </strong>
-                        </td>
-                        <td [ax-highlight-substring]="searchString">
-                            <span ax-tooltip="{{template.description}}">{{ template.description | truncateTo: 50}}</span>
-                        </td>
-                    </tr>
-                </template>
-                </tbody>
-            </table>
+            <ax-repo-table [repos]="selectorSteps.repositories.items" [search]="selectorSteps.repositories.search" (onSelect)="selectRepo($event)" *ngIf="activePart === 'repositories'"></ax-repo-table>
+            <ax-branch-table [branches]="selectorSteps.branches.items" [search]="selectorSteps.branches.search" (onSelect)="selectBranch($event)" *ngIf="activePart === 'branches'"></ax-branch-table>
+
+            <!--<table class="ax-table ax-table&#45;&#45;light ax-table&#45;&#45;no-background">-->
+                <!--<tbody>-->
+                    <!--<template ngFor let-repo [ngForOf]="(selectorSteps[activePart].items | axFilterBy: selectorSteps[activePart].search:'name')" let-i="index">-->
+                        <!--<ax-repo-table-row [repo]="repo" (onSelect)="selectRepo($event)"></ax-repo-table-row>-->
+                        <!--<tr class="clickable" [ngClass]="{'selected': repo.selected}" (click)="selectRepo(repo)">-->
+                            <!--<td class="repo-table-row">-->
+                                <!--<div class="repo-table-row__info">-->
+                                    <!--<span>{{ repo.name }}</span>-->
+                                    <!--<p>{{ repo.url }}</p>-->
+                                <!--</div>-->
+                                <!--<div class="fr repo-table-row__check">-->
+                                    <!--<i class="ax-icon-checked"  *ngIf="repo.selected"></i>-->
+                                <!--</div>-->
+                            <!--</td>-->
+                        <!--</tr>-->
+                    <!--</template>-->
+                <!--</tbody>-->
+            <!--</table>-->
+            <!--<table class="ax-table ax-table&#45;&#45;light ax-table&#45;&#45;no-background">-->
+                <!--<thead>-->
+                <!--<tr class="header">-->
+                    <!--<th width="60px">-->
+                        <!--<div class="ax-checkbox">-->
+                            <!--<input type="checkbox" (change)="selectAllTemplates()" [checked]="allSelected" [disabled]="templateLoader">-->
+                            <!--<span><i class="fa fa-check"></i></span>-->
+                        <!--</div>-->
+                    <!--</th>-->
+                    <!--<th width="30%">{{'Name' | translate | uppercase}}</th>-->
+                    <!--<th width="55%">{{'Description' | translate | uppercase}}</th>-->
+                <!--</tr>-->
+                <!--</thead>-->
+                <!--<tbody>-->
+                <!--<template ngFor let-template [ngForOf]="(selectorSteps[activePart].items | axFilterBy: search:'name')" let-i="index">-->
+                    <!--<tr [ngClass]="{'selected': template.selected}">-->
+                        <!--<td>-->
+                            <!--<div class="ax-checkbox">-->
+                                <!--<input type="checkbox" id="isSelected" (change)="selectTemplate(template)"-->
+                                       <!--[checked]="template.selected"><span><i class="fa fa-check"></i></span>-->
+                            <!--</div>-->
+                        <!--</td>-->
+                        <!--<td [ax-highlight-substring]="searchString">-->
+                            <!--<strong>-->
+                                <!--<span ax-tooltip="{{template.name}}">{{template.name}}</span>-->
+                            <!--</strong>-->
+                        <!--</td>-->
+                        <!--<td [ax-highlight-substring]="searchString">-->
+                            <!--<span ax-tooltip="{{template.description}}">{{ template.description | truncateTo: 50}}</span>-->
+                        <!--</td>-->
+                    <!--</tr>-->
+                <!--</template>-->
+                <!--</tbody>-->
+            <!--</table>-->
         </div>
     </div>
 </div>
