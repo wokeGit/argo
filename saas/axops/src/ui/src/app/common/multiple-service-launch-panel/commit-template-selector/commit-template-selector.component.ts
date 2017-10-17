@@ -1,9 +1,7 @@
-import * as _ from 'lodash';
 import { Component, OnInit, Input } from '@angular/core';
 
-import { RepoService } from '../../../services';
+import { RepoService, BranchService } from '../../../services';
 import { SortOperations } from '../../../common';
-
 import { Template, Commit } from '../../../model';
 
 type SelectorParts = 'repositories' | 'branches' | 'commits' | 'templates';
@@ -76,7 +74,8 @@ export class CommitTemplateSelectorComponent implements OnInit {
 
     public activePart: SelectorParts = 'repositories';
 
-    constructor(private repoService: RepoService) {
+    constructor(private repoService: RepoService,
+                private branchService: BranchService) {
     }
 
     ngOnInit() {
@@ -94,7 +93,8 @@ export class CommitTemplateSelectorComponent implements OnInit {
 
         switch (stepName) {
             case 'branches':
-                // TODO
+                // TODO get branches base on repo
+                this.getBranches();
                 break;
             case 'commits':
                 // TODO
@@ -128,6 +128,10 @@ export class CommitTemplateSelectorComponent implements OnInit {
         repo.selected = true;
     }
 
+    public selectBranch(branch) {
+        console.log('branch', branch)
+    }
+
     public selectRepoByUrl(url: string) {
         this.selectorSteps.repositories.items.forEach(item => {
             if (item.url === url) {
@@ -140,6 +144,19 @@ export class CommitTemplateSelectorComponent implements OnInit {
         await this.repoService.getReposAsync().toPromise().then(res => {
             let repositories: { name: string, url: string, selected: boolean }[] = this.splitRepository(res.data);
             this.selectorSteps.repositories.items = SortOperations.sortBy(repositories, 'name');
+        });
+    }
+
+    private async getBranches() {
+        await this.branchService.getBranchesAsync({ repo: this.selectorSteps.branches.selectedParent.url }).toPromise().then((branches) => {
+            console.log('branches', branches);
+            this.selectorSteps.branches.items = branches.data.map(branch => {
+                return {
+                    name: branch.name,
+                    selected: false
+                };
+            });
+            console.log('this.selectorSteps.branches.item', this.selectorSteps.branches.items);
         });
     }
 

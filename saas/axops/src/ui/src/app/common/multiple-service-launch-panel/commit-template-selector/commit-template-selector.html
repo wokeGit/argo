@@ -49,7 +49,6 @@
         <div class="">
             <ax-repo-table [repos]="selectorSteps.repositories.items" [search]="selectorSteps.repositories.search" (onSelect)="selectRepo($event)" *ngIf="activePart === 'repositories'"></ax-repo-table>
             <ax-branch-table [branches]="selectorSteps.branches.items" [search]="selectorSteps.branches.search" (onSelect)="selectBranch($event)" *ngIf="activePart === 'branches'"></ax-branch-table>
-
             <!--<table class="ax-table ax-table&#45;&#45;light ax-table&#45;&#45;no-background">-->
                 <!--<tbody>-->
                     <!--<template ngFor let-repo [ngForOf]="(selectorSteps[activePart].items | axFilterBy: selectorSteps[activePart].search:'name')" let-i="index">-->

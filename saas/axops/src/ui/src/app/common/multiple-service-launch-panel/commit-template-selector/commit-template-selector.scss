@@ -17,7 +17,7 @@
             list-style-type: none;
             border-top-right-radius: $border-radius;
             border-top-left-radius: $border-radius;
-            line-height: 60px;
+            line-height: 72px;
             font-size: 15px;
 
             li {
@@ -52,7 +52,7 @@
     }
 
     &__help-icon {
-        line-height: 65px;
+        line-height: 72px;
         margin-right: 20px;
 
         a {
@@ -70,7 +70,7 @@
         padding: 0 20px 0 20px;
         background-color: $ax-color-gray-2;
         border-radius: 22px;
-        margin: 10px;
+        margin: 18px 10px;
 
         input {
             width: 100%;
@@ -92,7 +92,7 @@
     }
 
     &__search {
-        height: 60px;
+        height: 72px;
         border-bottom: 1px solid $ax-color-gray-3;
 
         h4 {
@@ -100,13 +100,13 @@
             font-weight: 300;
             color: $ax-color-teal-7;
             display: inline;
-            line-height: 60px;
+            line-height: 72px;
             padding-left: 15px;
         }
     }
 
     &__prompt {
-        height: 60px;
+        height: 72px;
         background-color: $ax-color-teal-1;
         color: $ax-color-gray-6;
         border-bottom: 1px solid $ax-color-gray-3;
