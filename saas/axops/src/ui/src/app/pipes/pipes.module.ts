@@ -37,6 +37,7 @@ import { FilterByPipe } from './filterBy.pipe';
 import { KeysPipe } from './keys.pipe';
 import { SortFilterMenuPipe } from './sortFilterMenu.pipe';
 import { CatalogAppBgPipe } from './catalogAppBg.pipe';
+import { GetEmailFromCommitAuthorPipe } from './getEmailFromCommitAuthor.pipe';
 
 let pipes: any[] = [
     AccountStatePipe,
@@ -74,6 +75,7 @@ let pipes: any[] = [
     KeysPipe,
     SortFilterMenuPipe,
     CatalogAppBgPipe,
+    GetEmailFromCommitAuthorPipe,
 ];
 
 @NgModule({

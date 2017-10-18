@@ -1,16 +1,21 @@
 <table class="ax-table ax-table--light ax-table--no-background">
     <tbody>
-    <template ngFor let-branch [ngForOf]="(branches | axFilterBy: search:'name')" let-i="index">
-        <tr class="clickable" [ngClass]="{'selected': branch.selected}" (click)="selectBranch(branch)">
-            <td class="branch-table-row">
-                <div class="branch-table-row__info">
-                    <span>{{ branch.name }}</span>
-                </div>
-                <div class="fr branch-table-row__check">
-                    <i class="ax-icon-checked" *ngIf="branch.selected"></i>
-                </div>
-            </td>
+        <template ngFor let-branch [ngForOf]="(branches | axFilterBy: search:'name')" let-i="index">
+            <tr class="clickable" [ngClass]="{'selected': branch.selected}" (click)="selectBranch(branch)">
+                <td class="branch-table-row">
+                    <div class="branch-table-row__info">
+                        <span>{{ branch.name }}</span>
+                    </div>
+                    <div class="fr branch-table-row__check">
+                        <i class="ax-icon-checked" *ngIf="branch.selected"></i>
+                    </div>
+                </td>
+            </tr>
+        </template>
+        <tr *ngIf="loadData">
+            <div class="branch-table-row__loader">
+                <ax-loader-custom [size]="20"></ax-loader-custom>
+            </div>
         </tr>
-    </template>
     </tbody>
 </table>

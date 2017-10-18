@@ -28,4 +28,9 @@
             color: $ax-success-color;
         }
     }
+
+    &__loader {
+        height: 72px;
+        padding-top: 19px;
+    }
 }

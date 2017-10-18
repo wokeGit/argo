@@ -1,9 +1,8 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, Input } from '@angular/core';
 
-import { RepoService, BranchService } from '../../../services';
+import { RepoService, BranchService, CommitsService } from '../../../services';
 import { SortOperations } from '../../../common';
 import { Template, Commit } from '../../../model';
-
 type SelectorParts = 'repositories' | 'branches' | 'commits' | 'templates';
 
 @Component({
@@ -11,7 +10,8 @@ type SelectorParts = 'repositories' | 'branches' | 'commits' | 'templates';
     templateUrl: './commit-template-selector.html',
     styles: [ require('./commit-template-selector.scss') ],
 })
-export class CommitTemplateSelectorComponent implements OnInit {
+export class CommitTemplateSelectorComponent {
+    public activePart: SelectorParts = 'repositories';
     public selectorSteps: any  = {
         repositories: {
             isActive: true,
@@ -20,7 +20,8 @@ export class CommitTemplateSelectorComponent implements OnInit {
                 title: 'Select a repo',
                 searchInputPlaceholder: 'Search repo'
             },
-            items: []
+            items: [],
+            showDataLoader: false
         },
         branches: {
             isActive: false,
@@ -33,7 +34,8 @@ export class CommitTemplateSelectorComponent implements OnInit {
                 title: 'Select a branch',
                 searchInputPlaceholder: 'Search branch'
             },
-            items: []
+            items: [],
+            showDataLoader: false
         },
         commits: {
             isActive: false,
@@ -46,7 +48,8 @@ export class CommitTemplateSelectorComponent implements OnInit {
                 title: 'Select a commit',
                 searchInputPlaceholder: 'Search commit'
             },
-            items: []
+            items: [],
+            showDataLoader: false
         },
         templates: {
             isActive: false,
@@ -59,7 +62,8 @@ export class CommitTemplateSelectorComponent implements OnInit {
                 title: 'Select service template',
                 searchInputPlaceholder: 'Search template'
             },
-            items: []
+            items: [],
+            showDataLoader: false
         }
     };
 
@@ -72,13 +76,9 @@ export class CommitTemplateSelectorComponent implements OnInit {
         }
     }
 
-    public activePart: SelectorParts = 'repositories';
-
     constructor(private repoService: RepoService,
-                private branchService: BranchService) {
-    }
-
-    ngOnInit() {
+                private branchService: BranchService,
+                private commitsService: CommitsService) {
     }
 
     public async onBrowse() {
@@ -88,16 +88,18 @@ export class CommitTemplateSelectorComponent implements OnInit {
         }
     }
 
-    public changeStep(stepName: SelectorParts) {
+    public async changeStep(stepName: SelectorParts) {
         this.setActiveStep(stepName);
 
         switch (stepName) {
             case 'branches':
-                // TODO get branches base on repo
-                this.getBranches();
+                await this.getBranches();
+                // TODO if none is selected => select master => if there is no master select first at list
+                this.selectBranch({name: this.selectorSteps.commits.selectedParent.name, selected: false});
                 break;
             case 'commits':
-                // TODO
+                // TODO get commits base on repo and branch
+                await this.getCommits();
                 break;
             case 'templates':
                 // TODO
@@ -129,7 +131,26 @@ export class CommitTemplateSelectorComponent implements OnInit {
     }
 
     public selectBranch(branch) {
-        console.log('branch', branch)
+        this.selectorSteps.commits.selectedParent = {
+            name: branch.name,
+            url: `${this.selectorSteps.branches.selectedParent.url}/${branch.name}`
+        };
+
+        this.selectorSteps.branches.items.forEach(item => {
+            item.selected = item.name === branch.name;
+        });
+    }
+
+    public selectCommit(commit) {
+        console.log('commit', commit);
+        this.selectorSteps.templates.selectedParent = {
+            name: commit.name,
+            url: `${this.selectorSteps.branches.selectedParent.url}/${this.selectorSteps.commits.selectedParent.name}/${commit.revision}`
+        };
+
+        this.selectorSteps.branches.items.forEach(item => {
+            item.selected = item.revision === commit.revision;
+        });
     }
 
     public selectRepoByUrl(url: string) {
@@ -141,23 +162,46 @@ export class CommitTemplateSelectorComponent implements OnInit {
     }
 
     private async getRepos() {
+        this.selectorSteps.repositories.items = [];
+        this.selectorSteps.repositories.showDataLoader = true;
         await this.repoService.getReposAsync().toPromise().then(res => {
             let repositories: { name: string, url: string, selected: boolean }[] = this.splitRepository(res.data);
             this.selectorSteps.repositories.items = SortOperations.sortBy(repositories, 'name');
         });
+        this.selectorSteps.repositories.showDataLoader = false;
     }
 
     private async getBranches() {
-        await this.branchService.getBranchesAsync({ repo: this.selectorSteps.branches.selectedParent.url }).toPromise().then((branches) => {
-            console.log('branches', branches);
+        this.selectorSteps.branches.items = [];
+        this.selectorSteps.branches.showDataLoader = true;
+        await this.branchService.getBranchesAsync({ repo: this.selectorSteps.branches.selectedParent.url }, true).toPromise().then((branches) => {
             this.selectorSteps.branches.items = branches.data.map(branch => {
                 return {
                     name: branch.name,
                     selected: false
                 };
             });
-            console.log('this.selectorSteps.branches.item', this.selectorSteps.branches.items);
         });
+        this.selectorSteps.branches.showDataLoader = false;
+    }
+
+    private async getCommits() {
+        this.selectorSteps.commits.items = [];
+        this.selectorSteps.commits.showDataLoader = true;
+        let parameters = {
+            repo: this.selectorSteps.branches.selectedParent.url,
+            branch: this.selectorSteps.commits.selectedParent.name,
+            offset: 0,
+            limit: 20,
+        };
+        console.log('parameters', parameters);
+        await this.commitsService.getCommitsAsync(parameters).toPromise().then(res => {
+            this.selectorSteps.commits.items = res.data.map(commit => {
+                commit['selected'] = false;
+                return commit;
+            });
+        });
+        this.selectorSteps.commits.showDataLoader = false;
     }
 
     private splitRepository(repos: string []): { name: string, url: string, selected: boolean }[] {

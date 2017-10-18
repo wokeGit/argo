@@ -12,6 +12,9 @@ export class RepoTableComponent {
     @Input()
     public search: string;
 
+    @Input()
+    public loadData: boolean = false;
+
     @Output()
     public onSelect: EventEmitter<any> = new EventEmitter();
 

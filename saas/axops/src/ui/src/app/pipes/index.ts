@@ -7,3 +7,4 @@ export { CapitalizePipe } from './capitalize.pipe';
 export { CentsToDollarsPipe } from './centsToDollars.pipe';
 export { FullTimePipe } from './fullTime.pipe';
 export { DurationPipe } from './duration.pipe';
+export { GetEmailFromCommitAuthorPipe } from './getEmailFromCommitAuthor.pipe';
