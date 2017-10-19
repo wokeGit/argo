@@ -14,16 +14,16 @@
         <div class="commit-template-selector__header-on-browse" *ngIf="isBrowseVisible">
             <ul>
                 <li>
-                    <button axButtonWave class="ax-button" [ngClass]="{'ax-button--base': selectorSteps.repositories.isActive}" (click)="changeStep('repositories')">REPO</button>
+                    <button axButtonWave class="ax-button" [ngClass]="{'ax-button--base': activePart === 'repositories'}" (click)="changeStep('repositories')">REPO</button>
                 </li>
                 <li>
-                    <button axButtonWave class="ax-button" [ngClass]="{'ax-button--base': selectorSteps.branches.isActive}" (click)="changeStep('branches')">BRANCH</button>
+                    <button axButtonWave class="ax-button" [ngClass]="{'ax-button--base': activePart === 'branches'}" (click)="changeStep('branches')">BRANCH</button>
                 </li>
                 <li>
-                    <button axButtonWave class="ax-button" [ngClass]="{'ax-button--base': selectorSteps.commits.isActive}" (click)="changeStep('commits')">COMMIT</button>
+                    <button axButtonWave class="ax-button" [ngClass]="{'ax-button--base': activePart === 'commits'}" (click)="changeStep('commits')">COMMIT</button>
                 </li>
                 <li>
-                    <button axButtonWave class="ax-button" [ngClass]="{'ax-button--base': selectorSteps.templates.isActive}" (click)="changeStep('templates')">TEMPLATES</button>
+                    <button axButtonWave class="ax-button" [ngClass]="{'ax-button--base': activePart === 'templates'}" (click)="changeStep('templates')">TEMPLATES</button>
                 </li>
             </ul>
             <div class="fr commit-template-selector__help-icon">

@@ -1,22 +1,19 @@
-<table class="ax-table ax-table--light ax-table--no-background">
-    <tbody>
-    <table class="ax-table ax-table--light" *ngIf="templates">
-        <thead>
+<table class="ax-table ax-table--light ax-table--no-background" *ngIf="templates">
+    <thead>
         <tr class="header">
             <th width="60px">
                 <div class="ax-checkbox">
-                    <input type="checkbox" (change)="selectAllTemplates()" [checked]="allSelected"
-                           [disabled]="templateLoader">
+                    <input type="checkbox" (change)="selectAllTemplates()" [checked]="allSelected" [disabled]="loadData">
                     <span><i class="fa fa-check"></i></span>
                 </div>
             </th>
             <th width="30%">{{'Name' | translate | uppercase}}</th>
             <th width="55%">{{'Description' | translate | uppercase}}</th>
         </tr>
-        </thead>
-        <tbody>
+    </thead>
+    <tbody>
         <template ngFor let-template [ngForOf]="(templates | axFilterBy: search:'name')" let-i="index">
-            <tr [ngClass]="{'selected': template.selected}">
+            <tr class="commits-table-row"[ngClass]="{'selected': template.selected}">
                 <td>
                     <div class="ax-checkbox">
                         <input type="checkbox" id="isSelected" (change)="selectTemplate(template)"
@@ -33,23 +30,11 @@
                 </td>
             </tr>
         </template>
-
-        <!--<template ngFor let-branch [ngForOf]="(branches | axFilterBy: search:'name')" let-i="index">-->
-            <!--<tr class="clickable" [ngClass]="{'selected': branch.selected}" (click)="selectBranch(branch)">-->
-                <!--<td class="branch-table-row">-->
-                    <!--<div class="branch-table-row__info">-->
-                        <!--<span>{{ branch.name }}</span>-->
-                    <!--</div>-->
-                    <!--<div class="fr branch-table-row__check">-->
-                        <!--<i class="ax-icon-checked" *ngIf="branch.selected"></i>-->
-                    <!--</div>-->
-                <!--</td>-->
-            <!--</tr>-->
-        <!--</template>-->
-        <tr *ngIf="loadData">
-            <div class="branch-table-row__loader">
-                <ax-loader-custom [size]="20"></ax-loader-custom>
-            </div>
+        <tr *ngIf="!templates.length">
+            <td colspan="3">
+                <ax-loader-custom [size]="20" *ngIf="loadData"></ax-loader-custom>
+                <span *ngIf="!loadData">{{ 'There are no templates to display for selected commit.' | translate }}</span>
+            </td>
         </tr>
     </tbody>
 </table>

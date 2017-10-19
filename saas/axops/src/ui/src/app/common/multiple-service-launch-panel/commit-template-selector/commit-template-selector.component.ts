@@ -3,6 +3,8 @@ import { Component, Output, EventEmitter } from '@angular/core';
 import { RepoService, BranchService, CommitsService, TemplateService } from '../../../services';
 import { SortOperations } from '../../../common';
 import { ShortRevisionPipe } from '../../../pipes';
+import { Commit } from '../../../model';
+
 type SelectorParts = 'repositories' | 'branches' | 'commits' | 'templates';
 
 @Component({
@@ -80,7 +82,7 @@ export class CommitTemplateSelectorComponent {
     }
 
     public async onBrowse() {
-        this.activePart = 'repositories';
+        this.activePart = 'templates';
         if (this.selectorSteps.repositories.items.length === 0) {
             await this.getRepos();
             this.selectRepoByUrl(this.selectorSteps.branches.selectedParent.url);
@@ -168,16 +170,16 @@ export class CommitTemplateSelectorComponent {
         });
     }
 
-    public init(c) {
+    public init(commit) {
         this.activePart = 'templates';
-        if (c.revision && c.repo && c.branch) {
-            this.selectorSteps.branches.selectedParent = this.splitRepository([c.repo])[0];
-            this.selectorSteps.commits.selectedParent.name = c.branch;
-            this.selectorSteps.commits.selectedParent.url = `${c.repo}/${c.branch}`;
-            this.selectorSteps.templates.selectedParent.name = c.revision;
-            this.selectorSteps.templates.selectedParent.url = `${c.repo}/${c.branch}/${new ShortRevisionPipe().transform(c.revision)}`;
-
+        if (commit.revision && commit.repo && commit.branch) {
+            this.setParents(commit);
             this.getTemplates();
+        } else {
+            this.commitsService.getCommitByRevision(commit.revision).subscribe((c: Commit) => {
+                this.setParents(c);
+                this.getTemplates(c);
+            });
         }
     }
 
@@ -186,6 +188,14 @@ export class CommitTemplateSelectorComponent {
         console.log('reset', this.selectorStepsModel);
         this.selectorSteps = JSON.parse(JSON.stringify(this.selectorStepsModel));
         this.isBrowseVisible = false;
+    }
+
+    private setParents(commit: Commit) {
+        this.selectorSteps.branches.selectedParent = this.splitRepository([commit.repo])[0];
+        this.selectorSteps.commits.selectedParent.name = commit.branch;
+        this.selectorSteps.commits.selectedParent.url = `${commit.repo}/${commit.branch}`;
+        this.selectorSteps.templates.selectedParent.name = commit.revision;
+        this.selectorSteps.templates.selectedParent.url = `${commit.repo}/${commit.branch}/${new ShortRevisionPipe().transform(commit.revision)}`;
     }
 
     private async getRepos() {
@@ -212,13 +222,13 @@ export class CommitTemplateSelectorComponent {
         this.selectorSteps.branches.showDataLoader = false;
     }
 
-    private async getTemplates() {
+    private async getTemplates(commit?: Commit) {
         this.selectorSteps.templates.items = [];
         this.selectorSteps.templates.showDataLoader = true;
         // TODO once API will be ready update this step. Templates list should base on commit
         let parameters = {
-            repo: this.selectorSteps.branches.selectedParent.url,
-            branch: this.selectorSteps.commits.selectedParent.name,
+            repo: commit ? commit.repo : this.selectorSteps.branches.selectedParent.url,
+            branch: commit ? commit.branch || commit.branches[0] : this.selectorSteps.commits.selectedParent.name,
         };
         console.log('parameters', parameters);
         await this.templateService.getTemplatesAsync(parameters, false).toPromise().then(res => {

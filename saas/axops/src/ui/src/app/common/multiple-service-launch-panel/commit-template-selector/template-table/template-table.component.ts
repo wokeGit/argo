@@ -6,6 +6,8 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
     styles: [ require('./template-table.scss') ],
 })
 export class TemplateTableComponent {
+    public allSelected: boolean = false;
+
     @Input()
     public templates: {name: string, url: string, selected: boolean}[];
 
@@ -18,7 +20,19 @@ export class TemplateTableComponent {
     @Output()
     public onSelect: EventEmitter<any> = new EventEmitter();
 
-    public selectTemplate(branch: {name: string, url: string, selected: boolean}) {
-        this.onSelect.emit(branch);
+    public selectTemplate(template: {name: string, url: string, selected: boolean}) {
+        this.onSelect.emit(template);
+    }
+
+    public selectAllTemplates() {
+        this.allSelected = !this.allSelected;
+
+        this.templates.forEach(t => {
+            t.selected = this.allSelected;
+        });
+
+        if (this.allSelected) {
+            this.onSelect.emit(this.templates);
+        }
     }
 }
