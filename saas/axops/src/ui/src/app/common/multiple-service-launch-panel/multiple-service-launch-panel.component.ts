@@ -10,6 +10,7 @@ import { TemplateService, TaskService, CommitsService } from '../../services';
 import { NotificationsService } from 'argo-ui-lib/src/components';
 import { Session, HtmlForm, MULTIPLE_SERVICE_LAUNCH_PANEL_TABS } from './multiple-service-launch-panel.view-models';
 import { SetupJobNotificationsComponent } from './setup-job-notifications/setup-job-notifications.component';
+import { CommitTemplateSelectorComponent } from './commit-template-selector/commit-template-selector.component';
 
 @Component({
     selector: 'ax-multiple-service-launch-panel',
@@ -21,6 +22,9 @@ export class MultipleServiceLaunchPanelComponent {
 
     @ViewChild(SetupJobNotificationsComponent)
     private setupJobNotifications: SetupJobNotificationsComponent;
+
+    @ViewChild(CommitTemplateSelectorComponent)
+    private commitTemplateSelector: CommitTemplateSelectorComponent;
 
     public templates: Template[] = [];
     public templatesToSubmit: Template[] = [];
@@ -113,6 +117,8 @@ export class MultipleServiceLaunchPanelComponent {
                 this.loadTemplates(commit);
             }
         }
+
+        this.commitTemplateSelector.init(commit);
     }
 
     loadTemplates(commit: Commit) {
@@ -133,7 +139,10 @@ export class MultipleServiceLaunchPanelComponent {
         this.showChangeRepoBranchPanel = true;
     }
 
-    closePanel(event?) {
+    closePanel() {
+        if (this.commitTemplateSelector) {
+            this.commitTemplateSelector.resetComponent();
+        }
         this.session = new Session();
         this.templates = [];
         this.templatesToSubmit = [];
@@ -249,9 +258,11 @@ export class MultipleServiceLaunchPanelComponent {
     }
 
     isAnyTemplateSelected() {
-        return this.templates.find(item => {
-            return item['selected'] === true;
-        }) !== undefined;
+        // return this.templates.find(item => {
+        // return this.templatesToSubmit.find(item => {
+        //     return item['selected'] === true;
+        // }) !== undefined;
+        return !!this.templatesToSubmit.length;
     }
 
     goToNextStep() {
@@ -260,7 +271,7 @@ export class MultipleServiceLaunchPanelComponent {
     }
 
     next() {
-        this.templatesToSubmit = this.templates.filter(item => item.selected);
+        // this.templatesToSubmit = this.templates.filter(item => item.selected);
 
         this.prepareForms(this.templatesToSubmit);
     }
@@ -311,6 +322,10 @@ export class MultipleServiceLaunchPanelComponent {
         });
 
         return parameters;
+    }
+
+    public updateTemplatesToSubmit(templates) {
+        this.templatesToSubmit = templates;
     }
 
     public selectTab(tabName: string) {

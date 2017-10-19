@@ -1,8 +1,8 @@
-import { Component, Input } from '@angular/core';
+import { Component, Output, EventEmitter } from '@angular/core';
 
-import { RepoService, BranchService, CommitsService } from '../../../services';
+import { RepoService, BranchService, CommitsService, TemplateService } from '../../../services';
 import { SortOperations } from '../../../common';
-import { Template, Commit } from '../../../model';
+import { ShortRevisionPipe } from '../../../pipes';
 type SelectorParts = 'repositories' | 'branches' | 'commits' | 'templates';
 
 @Component({
@@ -11,8 +11,10 @@ type SelectorParts = 'repositories' | 'branches' | 'commits' | 'templates';
     styles: [ require('./commit-template-selector.scss') ],
 })
 export class CommitTemplateSelectorComponent {
-    public activePart: SelectorParts = 'repositories';
-    public selectorSteps: any  = {
+    public activePart: SelectorParts = 'templates';
+    public isBrowseVisible: boolean = false;
+    public selectorSteps: any;
+    public selectorStepsModel: any = {
         repositories: {
             isActive: true,
             search: '',
@@ -67,21 +69,18 @@ export class CommitTemplateSelectorComponent {
         }
     };
 
-    @Input()
-    set commit(c: Commit) {
-        if (c.revision && c.repo && c.branch) {
-            this.selectorSteps.branches.selectedParent = this.splitRepository([c.repo])[0];
-            this.selectorSteps.commits.selectedParent.name = c.branch;
-            this.selectorSteps.templates.selectedParent.name = c.revision;
-        }
-    }
+    @Output()
+    public updateTemplatesToSubmit: EventEmitter<any> = new EventEmitter();
 
     constructor(private repoService: RepoService,
                 private branchService: BranchService,
-                private commitsService: CommitsService) {
+                private commitsService: CommitsService,
+                private templateService: TemplateService) {
+        this.selectorSteps = JSON.parse(JSON.stringify(this.selectorStepsModel));
     }
 
     public async onBrowse() {
+        this.activePart = 'repositories';
         if (this.selectorSteps.repositories.items.length === 0) {
             await this.getRepos();
             this.selectRepoByUrl(this.selectorSteps.branches.selectedParent.url);
@@ -98,11 +97,11 @@ export class CommitTemplateSelectorComponent {
                 this.selectBranch({name: this.selectorSteps.commits.selectedParent.name, selected: false});
                 break;
             case 'commits':
-                // TODO get commits base on repo and branch
                 await this.getCommits();
+                this.selectCommit({revision: this.selectorSteps.templates.selectedParent.name});
                 break;
             case 'templates':
-                // TODO
+                await this.getTemplates();
                 break;
         }
     }
@@ -142,15 +141,23 @@ export class CommitTemplateSelectorComponent {
     }
 
     public selectCommit(commit) {
-        console.log('commit', commit);
         this.selectorSteps.templates.selectedParent = {
-            name: commit.name,
-            url: `${this.selectorSteps.branches.selectedParent.url}/${this.selectorSteps.commits.selectedParent.name}/${commit.revision}`
+            name: `${new ShortRevisionPipe().transform(commit.revision)}`,
+            url: `${this.selectorSteps.branches.selectedParent.url}/${this.selectorSteps.commits.selectedParent.name}/${new ShortRevisionPipe().transform(commit.revision)}`
         };
 
-        this.selectorSteps.branches.items.forEach(item => {
-            item.selected = item.revision === commit.revision;
+        this.selectorSteps.commits.items.forEach(item => {
+            item.selected = new ShortRevisionPipe().transform(item.revision) === new ShortRevisionPipe().transform(commit.revision);
         });
+    }
+
+    public selectTemplate(template) {
+        template.selected = !template.selected;
+        let templatesToSubmit = this.selectorSteps.templates.items.filter(t => {
+            return t.selected;
+        });
+
+        this.updateTemplatesToSubmit.emit(templatesToSubmit);
     }
 
     public selectRepoByUrl(url: string) {
@@ -159,6 +166,26 @@ export class CommitTemplateSelectorComponent {
                 item.selected = true;
             }
         });
+    }
+
+    public init(c) {
+        this.activePart = 'templates';
+        if (c.revision && c.repo && c.branch) {
+            this.selectorSteps.branches.selectedParent = this.splitRepository([c.repo])[0];
+            this.selectorSteps.commits.selectedParent.name = c.branch;
+            this.selectorSteps.commits.selectedParent.url = `${c.repo}/${c.branch}`;
+            this.selectorSteps.templates.selectedParent.name = c.revision;
+            this.selectorSteps.templates.selectedParent.url = `${c.repo}/${c.branch}/${new ShortRevisionPipe().transform(c.revision)}`;
+
+            this.getTemplates();
+        }
+    }
+
+    public resetComponent() {
+        // TODO reset component
+        console.log('reset', this.selectorStepsModel);
+        this.selectorSteps = JSON.parse(JSON.stringify(this.selectorStepsModel));
+        this.isBrowseVisible = false;
     }
 
     private async getRepos() {
@@ -183,6 +210,25 @@ export class CommitTemplateSelectorComponent {
             });
         });
         this.selectorSteps.branches.showDataLoader = false;
+    }
+
+    private async getTemplates() {
+        this.selectorSteps.templates.items = [];
+        this.selectorSteps.templates.showDataLoader = true;
+        // TODO once API will be ready update this step. Templates list should base on commit
+        let parameters = {
+            repo: this.selectorSteps.branches.selectedParent.url,
+            branch: this.selectorSteps.commits.selectedParent.name,
+        };
+        console.log('parameters', parameters);
+        await this.templateService.getTemplatesAsync(parameters, false).toPromise().then(res => {
+            console.log('res', res);
+            this.selectorSteps.templates.items = res.data.map(template => {
+                template['selected'] = false;
+                return template;
+            });
+        });
+        this.selectorSteps.templates.showDataLoader = false;
     }
 
     private async getCommits() {

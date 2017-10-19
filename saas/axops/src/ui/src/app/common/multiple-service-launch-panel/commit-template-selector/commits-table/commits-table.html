@@ -5,7 +5,7 @@
                 <td class="commits-table-row">
                     <div class="commits-table-row__info">
                         <span>{{ commit.description }}</span>
-                        <p>ID: {{ commit.revision }}</p>
+                        <p>ID: {{ commit.revision | shortRevision }}</p>
                     </div>
                     <div class="commits-table-row__info">
                         <span>{{ commit.author | getEmailFromCommitAuthor }}</span>

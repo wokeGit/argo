@@ -1,0 +1,55 @@
+<table class="ax-table ax-table--light ax-table--no-background">
+    <tbody>
+    <table class="ax-table ax-table--light" *ngIf="templates">
+        <thead>
+        <tr class="header">
+            <th width="60px">
+                <div class="ax-checkbox">
+                    <input type="checkbox" (change)="selectAllTemplates()" [checked]="allSelected"
+                           [disabled]="templateLoader">
+                    <span><i class="fa fa-check"></i></span>
+                </div>
+            </th>
+            <th width="30%">{{'Name' | translate | uppercase}}</th>
+            <th width="55%">{{'Description' | translate | uppercase}}</th>
+        </tr>
+        </thead>
+        <tbody>
+        <template ngFor let-template [ngForOf]="(templates | axFilterBy: search:'name')" let-i="index">
+            <tr [ngClass]="{'selected': template.selected}">
+                <td>
+                    <div class="ax-checkbox">
+                        <input type="checkbox" id="isSelected" (change)="selectTemplate(template)"
+                               [checked]="template.selected"><span><i class="fa fa-check"></i></span>
+                    </div>
+                </td>
+                <td [ax-highlight-substring]="searchString">
+                    <strong>
+                        <span ax-tooltip="{{template.name}}">{{template.name}}</span>
+                    </strong>
+                </td>
+                <td [ax-highlight-substring]="searchString">
+                    <span ax-tooltip="{{template.description}}">{{ template.description | truncateTo: 50}}</span>
+                </td>
+            </tr>
+        </template>
+
+        <!--<template ngFor let-branch [ngForOf]="(branches | axFilterBy: search:'name')" let-i="index">-->
+            <!--<tr class="clickable" [ngClass]="{'selected': branch.selected}" (click)="selectBranch(branch)">-->
+                <!--<td class="branch-table-row">-->
+                    <!--<div class="branch-table-row__info">-->
+                        <!--<span>{{ branch.name }}</span>-->
+                    <!--</div>-->
+                    <!--<div class="fr branch-table-row__check">-->
+                        <!--<i class="ax-icon-checked" *ngIf="branch.selected"></i>-->
+                    <!--</div>-->
+                <!--</td>-->
+            <!--</tr>-->
+        <!--</template>-->
+        <tr *ngIf="loadData">
+            <div class="branch-table-row__loader">
+                <ax-loader-custom [size]="20"></ax-loader-custom>
+            </div>
+        </tr>
+    </tbody>
+</table>

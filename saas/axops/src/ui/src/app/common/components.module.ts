@@ -68,6 +68,7 @@ import { CommitTemplateSelectorComponent } from './multiple-service-launch-panel
 import { RepoTableComponent } from './multiple-service-launch-panel/commit-template-selector/repo-table/repo-table.component';
 import { BranchTableComponent } from './multiple-service-launch-panel/commit-template-selector/branch-table/branch-table.component';
 import { CommitsTableComponent } from './multiple-service-launch-panel/commit-template-selector/commits-table/commits-table.component';
+import { TemplateTableComponent } from './multiple-service-launch-panel/commit-template-selector/template-table/template-table.component';
 
 let components: any[] = [
     AccessMarkComponent,
@@ -129,6 +130,7 @@ let components: any[] = [
     RepoTableComponent,
     BranchTableComponent,
     CommitsTableComponent,
+    TemplateTableComponent,
 ];
 
 @NgModule({
