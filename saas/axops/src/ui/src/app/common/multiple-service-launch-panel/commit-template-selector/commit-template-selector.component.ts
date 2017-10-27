@@ -172,6 +172,7 @@ export class CommitTemplateSelectorComponent {
 
     public init(commit) {
         this.activePart = 'templates';
+
         if (commit.revision && commit.repo && commit.branch) {
             this.setParents(commit);
             this.getTemplates();
@@ -191,6 +192,7 @@ export class CommitTemplateSelectorComponent {
     }
 
     private setParents(commit: Commit) {
+        console.log('commit.repo', commit.repo)
         this.selectorSteps.branches.selectedParent = this.splitRepository([commit.repo])[0];
         this.selectorSteps.commits.selectedParent.name = commit.branch;
         this.selectorSteps.commits.selectedParent.url = `${commit.repo}/${commit.branch}`;
@@ -201,7 +203,7 @@ export class CommitTemplateSelectorComponent {
     private async getRepos() {
         this.selectorSteps.repositories.items = [];
         this.selectorSteps.repositories.showDataLoader = true;
-        await this.repoService.getReposAsync().toPromise().then(res => {
+        await this.repoService.getReposAsync(true).toPromise().then(res => {
             let repositories: { name: string, url: string, selected: boolean }[] = this.splitRepository(res.data);
             this.selectorSteps.repositories.items = SortOperations.sortBy(repositories, 'name');
         });
@@ -232,7 +234,6 @@ export class CommitTemplateSelectorComponent {
         };
         console.log('parameters', parameters);
         await this.templateService.getTemplatesAsync(parameters, false).toPromise().then(res => {
-            console.log('res', res);
             this.selectorSteps.templates.items = res.data.map(template => {
                 template['selected'] = false;
                 return template;

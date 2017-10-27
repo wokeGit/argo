@@ -2,18 +2,16 @@
     <tbody>
         <template ngFor let-commit [ngForOf]="(commits | axFilterBy: search:'name')" let-i="index">
             <tr class="clickable commits-table-row" [ngClass]="{'selected': commit.selected}" (click)="selectCommit(commit)">
-                <td>
-                    <div class="commits-table-row__info">
-                        <span>{{ commit.description }}</span>
-                        <p>ID: {{ commit.revision | shortRevision }}</p>
-                    </div>
-                    <div class="commits-table-row__info">
-                        <span>{{ commit.author | getEmailFromCommitAuthor }}</span>
-                        <p>Commited on: {{ commit.date | timestamp }}</p>
-                    </div>
-                    <div class="fr commits-table-row__check">
-                        <i class="ax-icon-checked" *ngIf="commit.selected"></i>
-                    </div>
+                <td class="commits-table-row__info" width="60%">
+                    <span>{{ commit.description }}</span>
+                    <p>ID: {{ commit.revision | shortRevision }}</p>
+                </td>
+                <td class="commits-table-row__info" width="30%">
+                    <span>{{ commit.author | getEmailFromCommitAuthor }}</span>
+                    <p>Commited on: {{ commit.date | timestamp }}</p>
+                </td>
+                <td class="commits-table-row__info" width="10%">
+                    <i class="ax-icon-checked" *ngIf="commit.selected"></i>
                 </td>
             </tr>
         </template>
