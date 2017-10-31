@@ -3,7 +3,6 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
 @Component({
     selector: 'ax-commits-table',
     templateUrl: './commits-table.html',
-    styles: [ require('./commits-table.scss') ],
 })
 export class CommitsTableComponent {
     @Input()

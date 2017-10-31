@@ -46,7 +46,7 @@
                 <p>{{ selectorSteps[activePart].selectedParent.url }}</p>
             </div>
         </div>
-        <div class="">
+        <div>
             <ax-repo-table [repos]="selectorSteps.repositories.items" [search]="selectorSteps.repositories.search" [loadData]="selectorSteps.repositories.showDataLoader" (onSelect)="selectRepo($event)" *ngIf="activePart === 'repositories'"></ax-repo-table>
             <ax-branch-table [branches]="selectorSteps.branches.items" [search]="selectorSteps.branches.search" [loadData]="selectorSteps.branches.showDataLoader" (onSelect)="selectBranch($event)" *ngIf="activePart === 'branches'"></ax-branch-table>
             <ax-commits-table [commits]="selectorSteps.commits.items" [search]="selectorSteps.commits.search" [loadData]="selectorSteps.commits.showDataLoader" (onSelect)="selectCommit($event)" *ngIf="activePart === 'commits'"></ax-commits-table>

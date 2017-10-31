@@ -49,6 +49,71 @@
 
     &__body {
         margin: 0 10px 20px 10px;
+
+        table {
+            tbody > tr {
+                &:hover {
+                    background-color: $ax-color-gray-1;
+                }
+
+                .table-row {
+                    height: 72px;
+
+                    &:hover {
+                        background-color: $ax-color-gray-1;
+                    }
+
+                    &__info {
+                        display: inline-block;
+
+                        span {
+                            color: $ax-color-gray-6;
+                            font-weight: bold;
+                        }
+
+                        p {
+                            margin: 0;
+                        }
+                    }
+
+                    &__check {
+                        display: inline-block;
+                        line-height: 44px;
+                        margin-right: 5px;
+
+                        i {
+                            font-size: 20px;
+                            color: $ax-success-color;
+                        }
+                    }
+
+                    &__loader {
+                        height: 72px;
+                        padding-top: 27px;
+                    }
+
+                    &--commits {
+                        & > td  > i {
+                            text-overflow: clip;
+                        }
+
+                        .table-row__info {
+                            p {
+                                line-height: 1;
+                                margin-bottom: 0;
+                                margin-top: 7px;
+                            }
+                        }
+                    }
+
+                    &--branch {
+                        .table-row__info > span {
+                            line-height: 44px;
+                        }
+                    }
+                }
+            }
+        }
     }
 
     &__help-icon {

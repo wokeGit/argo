@@ -2,19 +2,19 @@
     <tbody>
         <template ngFor let-repo [ngForOf]="(repos | axFilterBy: search:'name')" let-i="index">
             <tr class="clickable" [ngClass]="{'selected': repo.selected}" (click)="selectRepo(repo)">
-                <td class="repo-table-row">
-                    <div class="repo-table-row__info">
+                <td class="table-row">
+                    <div class="table-row__info">
                         <span>{{ repo.name }}</span>
                         <p>{{ repo.url }}</p>
                     </div>
-                    <div class="fr repo-table-row__check">
+                    <div class="fr table-row__check">
                         <i class="ax-icon-checked" *ngIf="repo.selected"></i>
                     </div>
                 </td>
             </tr>
         </template>
         <tr *ngIf="loadData">
-            <div class="repo-table-row__loader">
+            <div class="table-row__loader">
                 <ax-loader-custom [size]="20"></ax-loader-custom>
             </div>
         </tr>

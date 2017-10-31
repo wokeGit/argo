@@ -114,13 +114,13 @@ export class MultipleServiceLaunchPanelComponent {
             this.stepNumber = 1;
         }
 
-        if (commit) {
-            if (!commit.branch && (commit.branches || []).length === 0) {
-                this.commitsService.getCommitByRevision(commit.revision).subscribe(res => this.loadTemplates(res));
-            } else {
-                this.loadTemplates(commit);
-            }
-        }
+        // if (commit) {
+        //     if (!commit.branch && (commit.branches || []).length === 0) {
+        //         this.commitsService.getCommitByRevision(commit.revision).subscribe(res => this.loadTemplates(res));
+        //     } else {
+        //         this.loadTemplates(commit);
+        //     }
+        // }
 
         this.isVisibleSelectServiceTemplatesPanel = true;
         this.commitTemplateSelector.init(commit);

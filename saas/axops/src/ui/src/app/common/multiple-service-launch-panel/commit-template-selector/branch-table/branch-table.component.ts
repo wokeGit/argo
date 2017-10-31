@@ -3,7 +3,6 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
 @Component({
     selector: 'ax-branch-table',
     templateUrl: './branch-table.html',
-    styles: [ require('./branch-table.scss') ],
 })
 export class BranchTableComponent {
     @Input()

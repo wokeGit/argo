@@ -13,7 +13,7 @@
     </thead>
     <tbody>
         <template ngFor let-template [ngForOf]="(templates | axFilterBy: search:'name')" let-i="index">
-            <tr class="commits-table-row"[ngClass]="{'selected': template.selected}">
+            <tr class="table-row"[ngClass]="{'selected': template.selected}">
                 <td>
                     <div class="ax-checkbox">
                         <input type="checkbox" id="isSelected" (change)="selectTemplate(template)"

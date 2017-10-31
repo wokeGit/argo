@@ -3,7 +3,6 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
 @Component({
     selector: 'ax-repo-table',
     templateUrl: './repo-table.html',
-    styles: [ require('./repo-table.scss') ],
 })
 export class RepoTableComponent {
     @Input()

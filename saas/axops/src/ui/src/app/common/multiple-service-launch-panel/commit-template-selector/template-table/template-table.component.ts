@@ -3,7 +3,6 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
 @Component({
     selector: 'ax-template-table',
     templateUrl: './template-table.html',
-    styles: [ require('./template-table.scss') ],
 })
 export class TemplateTableComponent {
     public allSelected: boolean = false;

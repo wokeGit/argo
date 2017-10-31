@@ -1,26 +1,24 @@
 <table class="ax-table ax-table--light ax-table--no-background">
     <tbody>
         <template ngFor let-commit [ngForOf]="(commits | axFilterBy: search:'name')" let-i="index">
-            <tr class="clickable commits-table-row" [ngClass]="{'selected': commit.selected}" (click)="selectCommit(commit)">
-                <td class="commits-table-row__info" width="60%">
+            <tr class="clickable table-row table-row--commits" [ngClass]="{'selected': commit.selected}" (click)="selectCommit(commit)">
+                <td class="table-row__info" width="70%">
                     <span>{{ commit.description }}</span>
                     <p>ID: {{ commit.revision | shortRevision }}</p>
                 </td>
-                <td class="commits-table-row__info" width="30%">
+                <td class="table-row__info" width="25%">
                     <span>{{ commit.author | getEmailFromCommitAuthor }}</span>
                     <p>Commited on: {{ commit.date | timestamp }}</p>
                 </td>
-                <td class="commits-table-row__info" width="10%">
+                <td class="table-row__check" width="5%">
                     <i class="ax-icon-checked" *ngIf="commit.selected"></i>
                 </td>
             </tr>
         </template>
         <tr *ngIf="loadData">
-            <td>
-                <div class="commits-table-row__loader">
-                    <ax-loader-custom [size]="20"></ax-loader-custom>
-                </div>
-            </td>
+            <div class="table-row__loader">
+                <ax-loader-custom [size]="20"></ax-loader-custom>
+            </div>
         </tr>
     </tbody>
 </table>
