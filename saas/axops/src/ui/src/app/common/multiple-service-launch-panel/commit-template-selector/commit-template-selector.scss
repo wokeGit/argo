@@ -39,6 +39,10 @@
         }
     }
 
+    &__root-loader {
+        display: inline-block;
+    }
+
     &__header-out-browse {
         border-radius: $border-radius;
     }

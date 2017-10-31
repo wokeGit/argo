@@ -15,6 +15,7 @@ type SelectorParts = 'repositories' | 'branches' | 'commits' | 'templates';
 export class CommitTemplateSelectorComponent {
     public activePart: SelectorParts = 'templates';
     public isBrowseVisible: boolean = false;
+    public showCommitRootLoader: boolean = false;
     public selectorSteps: any;
     public selectorStepsModel: any = {
         repositories: {
@@ -177,8 +178,10 @@ export class CommitTemplateSelectorComponent {
             this.setParents(commit);
             this.getTemplates();
         } else {
+            this.showCommitRootLoader = true;
             this.commitsService.getCommitByRevision(commit.revision).subscribe((c: Commit) => {
                 this.setParents(c);
+                this.showCommitRootLoader = false;
                 this.getTemplates(c);
             });
         }

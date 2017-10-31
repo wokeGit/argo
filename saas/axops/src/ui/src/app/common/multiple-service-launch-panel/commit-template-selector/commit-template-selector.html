@@ -1,11 +1,18 @@
 <div class="commit-template-selector__table">
     <div class="commit-template-selector__header">
         <div class="commit-template-selector__header-out-browse" *ngIf="!isBrowseVisible">
-            <ul>
+            <ul *ngIf="!showCommitRootLoader">
                 <li>{{ selectorSteps.branches.selectedParent.name }}</li>
                 <li>{{ selectorSteps.commits.selectedParent.name }}</li>
                 <li>{{ selectorSteps.templates.selectedParent.name }}</li>
                 <li>Templates</li>
+            </ul>
+            <ul *ngIf="showCommitRootLoader">
+                <li>
+                    <div class="commit-template-selector__root-loader">
+                        <ax-loader-custom [size]="20"></ax-loader-custom>
+                    </div>
+                </li>
             </ul>
             <div class="fr commit-template-selector__help-icon">
                 <a (click)="onBrowse(); isBrowseVisible = !isBrowseVisible"><i class="ax-icon-edit-property"></i> {{ 'Browse'| translate | uppercase }}</a>
