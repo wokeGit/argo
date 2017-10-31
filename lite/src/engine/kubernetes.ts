@@ -1,15 +1,18 @@
-import { Observable, Observer } from 'rxjs';
+import { Observable, Observer, Subject } from 'rxjs';
 import * as api from 'kubernetes-client';
 import * as path from 'path';
 import * as shell from 'shelljs';
 import * as shellEscape from 'shell-escape';
 import * as fs from 'fs';
+import * as JSONStream from 'json-stream';
 
 import * as model from './model';
 import { Executor, StepResult, WorkflowContext, Logger, ContainerStepInput } from './common';
 import * as utils from './utils';
 
-interface PodInfo { name: string; podIP: string; status: 'Pending' | 'Running' | 'Succeeded' | 'Failed'; };
+type PodStatus = 'Pending' | 'Running' | 'Succeeded' | 'Failed' | 'Deleted';
+
+interface PodInfo { name: string; podIP: string; status: PodStatus; };
 
 export class KubernetesExecutor implements Executor {
 
@@ -29,21 +32,24 @@ export class KubernetesExecutor implements Executor {
     private constructor(private logger: Logger, private configPath: string, private config: any) {
         this.core = new api.Core(Object.assign(config, {promises: true}));
 
-        this.podUpdates = utils.
-            reactifyJsonStream(this.core.ns.pods.getStream({ qs: { watch: true } })).
-            map(item => item.object).
+        this.podUpdates = this.getPodUpdates().
             map(item => {
-                let name = item.metadata.name;
-                let status: 'Pending' | 'Running' | 'Succeeded' | 'Failed';
-                switch (item.status.phase) {
+                let object = item.object;
+                let name = object.metadata.name;
+                if (item.type === 'DELETED') {
+                    return { name, status: <PodStatus> 'Deleted', podIP: object.status.podIP || null };
+                }
+
+                let status: PodStatus;
+                switch (object.status.phase) {
                     case 'Failed':
                     case 'Pending':
                     case 'Succeeded':
-                        status = item.status.phase;
+                        status = object.status.phase;
                         break;
                     case 'Running':
-                        let stepExitCode = this.getContainerExitCode(item, 'step');
-                        let dockerExitCode = this.getContainerExitCode(item, 'docker');
+                        let stepExitCode = this.getContainerExitCode(object, 'step');
+                        let dockerExitCode = this.getContainerExitCode(object, 'docker');
                         if ((stepExitCode !== null && stepExitCode !== 0) || (dockerExitCode !== null && dockerExitCode !== 0)) {
                             status = 'Failed';
                         } if (stepExitCode === 0) {
@@ -56,11 +62,14 @@ export class KubernetesExecutor implements Executor {
                         status = 'Failed';
                         break;
                 }
-                return { name, status, podIP: item.status.podIP || null };
+                return { name, status, podIP: object.status.podIP || null };
             }).
             distinct(item => `${item.name} - ${item.status} - ${item.podIP}`).
             do(item => this.logger.debug(`Pod '${item.name}' has been updated: status: ${item.status}; podIp: ${item.podIP}`)).
+            repeat().
+            retry().
             share();
+        this.podUpdates.subscribe();
     }
 
     public async createNetwork(name: string): Promise<string> {
@@ -72,9 +81,10 @@ export class KubernetesExecutor implements Executor {
         // do nothing, pods are running in same network
     }
 
-    public executeContainerStep(step: model.WorkflowStep, context: WorkflowContext, input: ContainerStepInput): Observable<StepResult> {
+    public executeContainerStep(step: model.WorkflowStep, context: WorkflowContext, input: ContainerStepInput, cancelRequested?: Subject<any>): Observable<StepResult> {
         return new Observable<StepResult>((observer: Observer<StepResult>) => {
             let stepPod = null;
+            let stopUserScript = false;
 
             let cleanUp = async () => {
                 if (stepPod) {
@@ -115,7 +125,7 @@ export class KubernetesExecutor implements Executor {
                     let stepIsDone = false;
                     do {
                         let res = await this.kubeCtlExec(stepPod, ['cat /__argo/step_done'], false);
-                        stepIsDone = res.code === 0 && (res.stdout || '').trim() === 'done';
+                        stepIsDone = res.code === 0 && (res.stdout || '').trim() === 'done' || stopUserScript;
                     } while (!stepIsDone);
                     this.logger.debug(`User script for for step id ${step.id} has been completed`);
 
@@ -123,12 +133,14 @@ export class KubernetesExecutor implements Executor {
                     let artifactsMap = await this.downloadArtifacts(step, stepPod, input, tempDir);
 
                     await this.kubeCtlExec(stepPod, ['echo done > /__argo/artifacts_out']);
-                    let completedPod = await this.podUpdates.filter(pod => pod.name === step.id && this.isPodCompeleted(pod)).first().toPromise();
+                    let completedPod = stopUserScript ? startedPod : await this.podUpdates.filter(pod => pod.name === step.id && this.isPodCompeleted(pod)).first().toPromise();
 
-                    let logLines = await this.getLiveLogs(stepPod.metadata.name).toArray().toPromise();
-                    let logsPath = path.join(tempDir, 'logs');
-                    fs.writeFileSync(logsPath, logLines.join(''));
-                    notify({ logsPath });
+                    if (this.isPodCompeleted(completedPod)) {
+                        let logLines = await this.getLiveLogs(stepPod.metadata.name).toArray().toPromise();
+                        let logsPath = path.join(tempDir, 'logs');
+                        fs.writeFileSync(logsPath, logLines.join(''));
+                        notify({ logsPath });
+                    }
 
                     notify({
                         status: completedPod.status === 'Succeeded' ? model.TaskStatus.Success : model.TaskStatus.Failed,
@@ -143,6 +155,11 @@ export class KubernetesExecutor implements Executor {
                 }
             };
 
+            if (cancelRequested) {
+                cancelRequested.subscribe(async () => {
+                    stopUserScript = true;
+                });
+            }
             execute();
             return cleanUp;
         });
@@ -150,6 +167,17 @@ export class KubernetesExecutor implements Executor {
 
     public getLiveLogs(containerId: string): Observable<string> {
         return utils.reactifyStringStream(this.core.ns.po(containerId).log.getStream({ qs: { follow: true, container: 'step' } }));
+    }
+
+    private getPodUpdates() {
+        return new Observable((observer: Observer<any>) => {
+            let stream = this.core.ns.pods.getStream({ qs: { watch: true } });
+            stream.on('end', () => observer.complete());
+            stream.on('error', e => observer.error(e));
+            stream.on('close', () => observer.complete());
+            stream = stream.pipe(new JSONStream());
+            stream.on('data', (d) => observer.next(d));
+        });
     }
 
     private getContainerExitCode(pod, containerName: string) {
@@ -161,10 +189,13 @@ export class KubernetesExecutor implements Executor {
     }
 
     private createPod(step: model.WorkflowStep, input: ContainerStepInput) {
-        let volumes = [];
+        let volumes = [{name: 'argo', emptyDir: {}}];
         let env = [];
         if (input.dockerParams) {
             env.push({name: 'DOCKER_HOST', value: 'tcp://localhost:2375'});
+        }
+        if (step.template.env) {
+            env = env.concat(step.template.env);
         }
         let containers = [{
             name: 'step',
@@ -172,8 +203,7 @@ export class KubernetesExecutor implements Executor {
             command: ['sh', '-c'],
             env,
             args: [
-                `mkdir -p /__argo;
-                until [ -f /__argo/artifacts_in ]; do sleep 1; done;
+                `until [ -f /__argo/artifacts_in ]; do sleep 1; done;
                 ${input.dockerParams ? 'until docker info; do sleep 1; done;' : ''}
                 ${shellEscape(step.template.command.concat(step.template.args))};script_exit_code=$?;
                 echo done > /__argo/step_done;
@@ -187,7 +217,7 @@ export class KubernetesExecutor implements Executor {
                 },
             },
             securityContext: null,
-            volumeMounts: [],
+            volumeMounts: [{ name: 'argo', mountPath: '/__argo' }],
         }];
 
         if (input.dockerParams) {

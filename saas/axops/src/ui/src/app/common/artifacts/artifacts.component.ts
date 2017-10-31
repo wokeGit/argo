@@ -1,5 +1,4 @@
 import { Component, Input, Output, EventEmitter, OnChanges, OnDestroy, SimpleChanges, ViewChildren, QueryList, ElementRef } from '@angular/core';
-import { URLSearchParams } from '@angular/http';
 import { Subscription } from 'rxjs';
 
 import { Task, Deployment, Artifact, ARTIFACT_TYPES, DeletedStatus, TaskStatus } from '../../model';
@@ -224,10 +223,7 @@ export class ArtifactsComponent implements OnChanges, OnDestroy {
     }
 
     private getArtifactDownloadUrl(artifactId: string): string {
-        let filter = new URLSearchParams();
-        filter.set('action', 'download');
-        filter.append('artifact_id', artifactId);
-        return `v1/artifacts?${filter.toString()}`;
+        return this.artifactsService.getArtifactDownloadUrl(artifactId);
     }
 
     private artifactSubscriptionsCleanup() {

@@ -12,7 +12,7 @@ from ax.exceptions import AXTimeoutException
 from ax.kubernetes import swagger_client
 from ax.kubernetes.client import KubernetesApiClient, retry_not_exists, retry_unless_not_found, retry_unless
 from ax.kubernetes.kube_object import KubeObjectConfigFile
-from ax.platform.cluster_config import AXClusterConfig, ClusterProvider
+from ax.platform.cluster_config import AXClusterConfig
 from ax.platform.exceptions import AXPlatformException
 from ax.platform.component_config import AXPlatformConfigDefaults, SoftwareInfo
 from ax.platform.routes import InternalRoute
@@ -61,7 +61,7 @@ class Application(object):
         cluster_name_id = os.getenv("AX_CLUSTER_NAME_ID", None)
         assert cluster_name_id, "Cluster name id is None!"
         cluster_config = AXClusterConfig(cluster_name_id=cluster_name_id)
-        if cluster_config.get_cluster_provider() != ClusterProvider.USER:
+        if not cluster_config.get_cluster_provider().is_user_cluster():
             axam_path = DEFAULT_AM_YAML_PATH
         else:
             axam_path = "/ax/config/service/argo-all/axam-svc.yml.in"
@@ -114,6 +114,7 @@ class Application(object):
             namespace = swagger_client.V1Namespace()
             namespace.metadata = swagger_client.V1ObjectMeta()
             namespace.metadata.name = self.name
+            namespace.metadata.labels = {"creator": "argo-application", "app": self.name}
             self._client.api.create_namespace(namespace)
 
         # NOTE: 403 is not retried as application is getting deleted in parallel
@@ -299,11 +300,10 @@ class Applications(object):
             self.client = KubernetesApiClient(use_proxy=True)
         else:
             self.client = client
-        self.ignored_namespaces = frozenset(["kube-system", "default", "axsys", "axuser", "kube-public"])
 
     def list(self):
-        return [x.metadata.name for x in self._get_namespaces().items if x.metadata.name not in self.ignored_namespaces]
+        return [x.metadata.name for x in self._get_namespaces().items]
 
     @retry_unless()
     def _get_namespaces(self):
-        return self.client.api.list_namespace()
+        return self.client.api.list_namespace(label_selector="creator=argo-application")
