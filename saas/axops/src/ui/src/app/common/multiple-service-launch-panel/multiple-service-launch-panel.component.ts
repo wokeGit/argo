@@ -68,6 +68,7 @@ export class MultipleServiceLaunchPanelComponent {
             withCommitOnly: boolean,
             artifacts: Artifact[],
             resubmit: boolean) {
+        // console.log('o', commit, options)
         this.selectedTab = MULTIPLE_SERVICE_LAUNCH_PANEL_TABS.PARAMETERS;
         this.commit = new Commit();
         this.artifacts = artifacts || [];
@@ -95,7 +96,7 @@ export class MultipleServiceLaunchPanelComponent {
 
         this.withCommitOnly = withCommitOnly;
         if (options) {
-            console.log('options', options)
+            // console.log('options', options)
             if (options['project'] && options['action']) {
                 this.projectInfo = <{ project: Project, action: ProjectAction }> options;
             } else if (options['template']) { // resubmit failed
@@ -104,12 +105,12 @@ export class MultipleServiceLaunchPanelComponent {
             } else {
                 this.templates = [ Object.assign({}, <Template> options, { selected: true }) ];
                 this.isVisibleSelectServiceTemplatesPanel = true;
+                this.templatesToSubmit = this.templates.filter(item => item.selected);
                 this.next();
             }
             this.stepNumber = 2;
         } else {
             this.task = null;
-            task = null;
             this.projectInfo = null;
             this.stepNumber = 1;
         }
@@ -122,8 +123,10 @@ export class MultipleServiceLaunchPanelComponent {
         //     }
         // }
 
-        this.isVisibleSelectServiceTemplatesPanel = true;
-        this.commitTemplateSelector.init(commit);
+        if (commit) {
+            this.isVisibleSelectServiceTemplatesPanel = true;
+            this.commitTemplateSelector.init(commit);
+        }
     }
 
     loadTemplates(commit: Commit) {
@@ -276,8 +279,6 @@ export class MultipleServiceLaunchPanelComponent {
     }
 
     next() {
-        // this.templatesToSubmit = this.templates.filter(item => item.selected);
-
         this.prepareForms(this.templatesToSubmit);
     }
 
@@ -330,6 +331,7 @@ export class MultipleServiceLaunchPanelComponent {
     }
 
     public updateTemplatesToSubmit(templates) {
+        console.log('templates', templates);
         this.templatesToSubmit = templates;
 
         // this.getTemplates(repo);

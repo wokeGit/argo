@@ -95,11 +95,15 @@ export class CommitTemplateSelectorComponent {
 
         switch (stepName) {
             case 'branches':
-                await this.getBranches();
-                // TODO if none is selected => select master => if there is no master select first at list
-                this.selectBranch({name: this.selectorSteps.commits.selectedParent.name, selected: false});
+                let selectedRepo = this.selectorSteps.repositories.items.filter(repo => repo.selected)[0];
+                let lastSelectedRepo = this.selectorSteps.branches.items.length ? this.selectorSteps.branches.items[0].repo : null;
+                if (selectedRepo.url !== lastSelectedRepo) { // get branches if repo was changed
+                    await this.getBranches();
+                    this.selectBranch({name: this.selectorSteps.commits.selectedParent.name, selected: false});
+                }
                 break;
             case 'commits':
+                // TODO get commits if branch was changed
                 await this.getCommits();
                 this.selectCommit({revision: this.selectorSteps.templates.selectedParent.name});
                 break;
@@ -120,6 +124,7 @@ export class CommitTemplateSelectorComponent {
     }
 
     public selectRepo(repo: { name: string, url: string, selected: boolean }) {
+        console.log(repo, this.selectorSteps.branches.selectedParent)
         this.selectorSteps.branches.selectedParent = {
             name: repo.name,
             url: repo.url
@@ -133,6 +138,8 @@ export class CommitTemplateSelectorComponent {
     }
 
     public selectBranch(branch) {
+        // TODO if none is selected => select master => if there is no master select first at list
+        console.log(branch, this.selectorSteps.branches.items, this.selectorSteps.branches.selectedParent);
         this.selectorSteps.commits.selectedParent = {
             name: branch.name,
             url: `${this.selectorSteps.branches.selectedParent.url}/${branch.name}`
@@ -174,6 +181,7 @@ export class CommitTemplateSelectorComponent {
     public init(commit) {
         this.activePart = 'templates';
 
+        // console.log('commit', commit);
         if (commit.revision && commit.repo && commit.branch) {
             this.setParents(commit);
             this.getTemplates();
@@ -195,7 +203,7 @@ export class CommitTemplateSelectorComponent {
     }
 
     private setParents(commit: Commit) {
-        console.log('commit.repo', commit.repo)
+        // console.log('commit.repo', commit.repo)
         this.selectorSteps.branches.selectedParent = this.splitRepository([commit.repo])[0];
         this.selectorSteps.commits.selectedParent.name = commit.branch;
         this.selectorSteps.commits.selectedParent.url = `${commit.repo}/${commit.branch}`;
@@ -219,6 +227,7 @@ export class CommitTemplateSelectorComponent {
         await this.branchService.getBranchesAsync({ repo: this.selectorSteps.branches.selectedParent.url }, true).toPromise().then((branches) => {
             this.selectorSteps.branches.items = branches.data.map(branch => {
                 return {
+                    repo: this.selectorSteps.branches.selectedParent.url,
                     name: branch.name,
                     selected: false
                 };
@@ -235,7 +244,7 @@ export class CommitTemplateSelectorComponent {
             repo: commit ? commit.repo : this.selectorSteps.branches.selectedParent.url,
             branch: commit ? commit.branch || commit.branches[0] : this.selectorSteps.commits.selectedParent.name,
         };
-        console.log('parameters', parameters);
+        // console.log('parameters', parameters);
         await this.templateService.getTemplatesAsync(parameters, false).toPromise().then(res => {
             this.selectorSteps.templates.items = res.data.map(template => {
                 template['selected'] = false;
@@ -254,7 +263,7 @@ export class CommitTemplateSelectorComponent {
             offset: 0,
             limit: 20,
         };
-        console.log('parameters', parameters);
+        // console.log('parameters', parameters);
         await this.commitsService.getCommitsAsync(parameters).toPromise().then(res => {
             this.selectorSteps.commits.items = res.data.map(commit => {
                 commit['selected'] = false;
