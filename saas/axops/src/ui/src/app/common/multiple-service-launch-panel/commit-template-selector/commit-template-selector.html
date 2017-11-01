@@ -7,15 +7,11 @@
                 <li>{{ selectorSteps.templates.selectedParent.name }}</li>
                 <li>Templates</li>
             </ul>
-            <ul *ngIf="showCommitRootLoader">
-                <li>
-                    <div class="commit-template-selector__root-loader">
-                        <ax-loader-custom [size]="20"></ax-loader-custom>
-                    </div>
-                </li>
-            </ul>
-            <div class="fr commit-template-selector__help-icon">
+            <div class="fr commit-template-selector__help-icon" *ngIf="!showCommitRootLoader">
                 <a (click)="onBrowse(); isBrowseVisible = !isBrowseVisible"><i class="ax-icon-edit-property"></i> {{ 'Browse'| translate | uppercase }}</a>
+            </div>
+            <div class="commit-template-selector__root-loader" *ngIf="showCommitRootLoader">
+                <ax-loader-custom [size]="20"></ax-loader-custom>
             </div>
         </div>
         <div class="commit-template-selector__header-on-browse" *ngIf="isBrowseVisible">
@@ -53,7 +49,7 @@
                 <p>{{ selectorSteps[activePart].selectedParent.url }}</p>
             </div>
         </div>
-        <div>
+        <div *ngIf="!showCommitRootLoader">
             <ax-repo-table [repos]="selectorSteps.repositories.items" [search]="selectorSteps.repositories.search" [loadData]="selectorSteps.repositories.showDataLoader" (onSelect)="selectRepo($event)" *ngIf="activePart === 'repositories'"></ax-repo-table>
             <ax-branch-table [branches]="selectorSteps.branches.items" [search]="selectorSteps.branches.search" [loadData]="selectorSteps.branches.showDataLoader" (onSelect)="selectBranch($event)" *ngIf="activePart === 'branches'"></ax-branch-table>
             <ax-commits-table [commits]="selectorSteps.commits.items" [search]="selectorSteps.commits.search" [loadData]="selectorSteps.commits.showDataLoader" (onSelect)="selectCommit($event)" *ngIf="activePart === 'commits'"></ax-commits-table>

@@ -12,7 +12,7 @@
         </tr>
     </thead>
     <tbody>
-        <template ngFor let-template [ngForOf]="(templates | axFilterBy: search:'name')" let-i="index">
+        <template ngFor let-template [ngForOf]="(templates | axFilterByMultiple: search:['name', 'description'])" let-i="index">
             <tr class="table-row"[ngClass]="{'selected': template.selected}">
                 <td>
                     <div class="ax-checkbox">

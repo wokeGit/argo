@@ -1,6 +1,6 @@
 <table class="ax-table ax-table--light ax-table--no-background">
     <tbody>
-        <template ngFor let-repo [ngForOf]="(repos | axFilterBy: search:'name')" let-i="index">
+        <template ngFor let-repo [ngForOf]="(repos | axFilterBy: search:'url')" let-i="index">
             <tr class="clickable" [ngClass]="{'selected': repo.selected}" (click)="selectRepo(repo)">
                 <td class="table-row">
                     <div class="table-row__info">
