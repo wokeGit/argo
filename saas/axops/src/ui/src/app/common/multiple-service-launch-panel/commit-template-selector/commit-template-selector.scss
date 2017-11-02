@@ -193,4 +193,16 @@
             margin: 0 20px 15px 20px;
         }
     }
+
+    &__alert {
+        position: absolute;
+        top: 44%;
+        right: 12%;
+        transform: translate(2px, -7px);
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background-color: #ef0b28;
+        content: '';
+    }
 }

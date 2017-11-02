@@ -17,16 +17,24 @@
         <div class="commit-template-selector__header-on-browse" *ngIf="isBrowseVisible">
             <ul>
                 <li>
-                    <button axButtonWave class="ax-button" [ngClass]="{'ax-button--base': activePart === 'repositories'}" (click)="changeStep('repositories')">REPO</button>
+                    <button axButtonWave class="ax-button" [ngClass]="{'ax-button--base': activePart === 'repositories'}" (click)="changeStep('repositories')">
+                        REPO
+                    </button>
                 </li>
                 <li>
-                    <button axButtonWave class="ax-button" [ngClass]="{'ax-button--base': activePart === 'branches'}" (click)="changeStep('branches')">BRANCH</button>
+                    <button axButtonWave class="ax-button" [ngClass]="{'ax-button--base': activePart === 'branches'}" (click)="changeStep('branches')">
+                        BRANCH <span class="commit-template-selector__alert" *ngIf="selectorSteps.commits.selectedParent.name === ''"></span>
+                    </button>
                 </li>
                 <li>
-                    <button axButtonWave class="ax-button" [ngClass]="{'ax-button--base': activePart === 'commits'}" (click)="changeStep('commits')">COMMIT</button>
+                    <button axButtonWave class="ax-button" [ngClass]="{'ax-button--base': activePart === 'commits'}" (click)="changeStep('commits')">
+                        COMMIT <span class="commit-template-selector__alert" *ngIf="selectorSteps.templates.selectedParent.name === ''"></span>
+                    </button>
                 </li>
                 <li>
-                    <button axButtonWave class="ax-button" [ngClass]="{'ax-button--base': activePart === 'templates'}" (click)="changeStep('templates')">TEMPLATES</button>
+                    <button axButtonWave class="ax-button" [ngClass]="{'ax-button--base': activePart === 'templates'}" (click)="changeStep('templates')">
+                        TEMPLATES
+                    </button>
                 </li>
             </ul>
             <div class="fr commit-template-selector__help-icon">
@@ -51,7 +59,7 @@
         </div>
         <div *ngIf="!showCommitRootLoader">
             <ax-repo-table [repos]="selectorSteps.repositories.items" [search]="selectorSteps.repositories.search" [loadData]="selectorSteps.repositories.showDataLoader" (onSelect)="selectRepo($event)" *ngIf="activePart === 'repositories'"></ax-repo-table>
-            <ax-branch-table [branches]="selectorSteps.branches.items" [search]="selectorSteps.branches.search" [loadData]="selectorSteps.branches.showDataLoader" (onSelect)="selectBranch($event)" *ngIf="activePart === 'branches'"></ax-branch-table>
+            <ax-branch-table [branches]="selectorSteps.branches.items" [search]="selectorSteps.branches.search" [loadData]="selectorSteps.branches.showDataLoader" (onSelect)="selectBranchAndCleanTemplate($event)" *ngIf="activePart === 'branches'"></ax-branch-table>
             <ax-commits-table [commits]="selectorSteps.commits.items" [search]="selectorSteps.commits.search" [loadData]="selectorSteps.commits.showDataLoader" (onSelect)="selectCommit($event)" *ngIf="activePart === 'commits'"></ax-commits-table>
             <ax-template-table [templates]="selectorSteps.templates.items" [search]="selectorSteps.templates.search" [loadData]="selectorSteps.templates.showDataLoader" (onSelect)="selectTemplate($event)" *ngIf="activePart === 'templates'"></ax-template-table>
             <!--<table class="ax-table ax-table&#45;&#45;light ax-table&#45;&#45;no-background">-->

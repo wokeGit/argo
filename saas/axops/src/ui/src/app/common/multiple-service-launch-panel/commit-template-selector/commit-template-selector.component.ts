@@ -104,8 +104,15 @@ export class CommitTemplateSelectorComponent {
                 break;
             case 'commits':
                 // TODO get commits if branch was changed
-                await this.getCommits();
-                this.selectCommit({revision: this.selectorSteps.templates.selectedParent.name});
+                let selectedCommit = this.selectorSteps.branches.items.filter(branch => branch.selected)[0];
+                let lastSelectedCommit = this.selectorSteps.commits.items.length ? this.selectorSteps.commits.items[0].branch : null;
+                let sr = this.selectorSteps.repositories.items.filter(repo => repo.selected)[0];
+                let lsr = this.selectorSteps.branches.items.length ? this.selectorSteps.branches.items[0].repo : null;
+                console.log(this.selectorSteps.commits.items, sr, lsr, selectedCommit, lastSelectedCommit);
+                if (sr.url !== lsr || selectedCommit.name !== lastSelectedCommit) {
+                    await this.getCommits();
+                    this.selectCommit({revision: this.selectorSteps.templates.selectedParent.name});
+                }
                 break;
             case 'templates':
                 await this.getTemplates();
@@ -124,7 +131,10 @@ export class CommitTemplateSelectorComponent {
     }
 
     public selectRepo(repo: { name: string, url: string, selected: boolean }) {
-        console.log(repo, this.selectorSteps.branches.selectedParent)
+        if (repo.url === this.selectorSteps.branches.selectedParent.url) {
+            return;
+        }
+
         this.selectorSteps.branches.selectedParent = {
             name: repo.name,
             url: repo.url
@@ -135,11 +145,29 @@ export class CommitTemplateSelectorComponent {
             return repository;
         });
         repo.selected = true;
+
+        this.resetCommitsSelectedParent();
+        this.resetTemplatesSelectedParent();
+    }
+
+    public selectBranchAndCleanTemplate(branch) {
+        if (`${branch.repo}/${branch.name}` === this.selectorSteps.commits.selectedParent.url) {
+            return;
+        }
+        this.selectBranch(branch);
+
+        this.resetTemplatesSelectedParent();
     }
 
     public selectBranch(branch) {
-        // TODO if none is selected => select master => if there is no master select first at list
-        console.log(branch, this.selectorSteps.branches.items, this.selectorSteps.branches.selectedParent);
+        // if branch.name is empty, select 'master' repository if exist on this.selectorSteps.branches.items, if no, select first on the list
+        if (!branch.name) {
+            let isMasterBranchAvailable = !!this.selectorSteps.branches.items.filter(b => {
+                return b.name === 'master';
+            }).length;
+            branch.name = isMasterBranchAvailable ? 'master' : this.selectorSteps.branches.items.length ? this.selectorSteps.branches.items[0].name : '';
+        }
+
         this.selectorSteps.commits.selectedParent = {
             name: branch.name,
             url: `${this.selectorSteps.branches.selectedParent.url}/${branch.name}`
@@ -202,8 +230,17 @@ export class CommitTemplateSelectorComponent {
         this.isBrowseVisible = false;
     }
 
+    private resetTemplatesSelectedParent() {
+        this.selectorSteps.templates.selectedParent.name = '';
+        this.selectorSteps.templates.selectedParent.url = '';
+    }
+
+    private resetCommitsSelectedParent() {
+        this.selectorSteps.commits.selectedParent.name = '';
+        this.selectorSteps.commits.selectedParent.url = '';
+    }
+
     private setParents(commit: Commit) {
-        // console.log('commit.repo', commit.repo)
         this.selectorSteps.branches.selectedParent = this.splitRepository([commit.repo])[0];
         this.selectorSteps.commits.selectedParent.name = commit.branch;
         this.selectorSteps.commits.selectedParent.url = `${commit.repo}/${commit.branch}`;
@@ -263,7 +300,6 @@ export class CommitTemplateSelectorComponent {
             offset: 0,
             limit: 20,
         };
-        // console.log('parameters', parameters);
         await this.commitsService.getCommitsAsync(parameters).toPromise().then(res => {
             this.selectorSteps.commits.items = res.data.map(commit => {
                 commit['selected'] = false;
