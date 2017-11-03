@@ -95,21 +95,13 @@ export class CommitTemplateSelectorComponent {
 
         switch (stepName) {
             case 'branches':
-                let selectedRepo = this.selectorSteps.repositories.items.filter(repo => repo.selected)[0];
-                let lastSelectedRepo = this.selectorSteps.branches.items.length ? this.selectorSteps.branches.items[0].repo : null;
-                if (selectedRepo.url !== lastSelectedRepo) { // get branches if repo was changed
+                if (!this.isSelectedRepoSameAsLastSelected(this.selectorSteps.branches.items)) { // get branches if repo was changed
                     await this.getBranches();
                     this.selectBranch({name: this.selectorSteps.commits.selectedParent.name, selected: false});
                 }
                 break;
             case 'commits':
-                // TODO get commits if branch was changed
-                let selectedCommit = this.selectorSteps.branches.items.filter(branch => branch.selected)[0];
-                let lastSelectedCommit = this.selectorSteps.commits.items.length ? this.selectorSteps.commits.items[0].branch : null;
-                let sr = this.selectorSteps.repositories.items.filter(repo => repo.selected)[0];
-                let lsr = this.selectorSteps.branches.items.length ? this.selectorSteps.branches.items[0].repo : null;
-                console.log(this.selectorSteps.commits.items, sr, lsr, selectedCommit, lastSelectedCommit);
-                if (sr.url !== lsr || selectedCommit.name !== lastSelectedCommit) {
+                if (!this.isSelectedRepoSameAsLastSelected(this.selectorSteps.commits.items) || !this.isSelectedBranchSameAsLastSelected()) {
                     await this.getCommits();
                     this.selectCommit({revision: this.selectorSteps.templates.selectedParent.name});
                 }
@@ -180,12 +172,15 @@ export class CommitTemplateSelectorComponent {
 
     public selectCommit(commit) {
         this.selectorSteps.templates.selectedParent = {
-            name: `${new ShortRevisionPipe().transform(commit.revision)}`,
-            url: `${this.selectorSteps.branches.selectedParent.url}/${this.selectorSteps.commits.selectedParent.name}/${new ShortRevisionPipe().transform(commit.revision)}`
+            // name: `${new ShortRevisionPipe().transform(commit.revision)}`,
+            // url: `${this.selectorSteps.branches.selectedParent.url}/${this.selectorSteps.commits.selectedParent.name}/${new ShortRevisionPipe().transform(commit.revision)}`
+            name: commit.revision,
+            url: `${this.selectorSteps.branches.selectedParent.url}/${this.selectorSteps.commits.selectedParent.name}/${commit.revision}`
         };
 
         this.selectorSteps.commits.items.forEach(item => {
-            item.selected = new ShortRevisionPipe().transform(item.revision) === new ShortRevisionPipe().transform(commit.revision);
+            // item.selected = new ShortRevisionPipe().transform(item.revision) === new ShortRevisionPipe().transform(commit.revision);
+            item.selected = item.revision === commit.revision;
         });
     }
 
@@ -224,8 +219,6 @@ export class CommitTemplateSelectorComponent {
     }
 
     public resetComponent() {
-        // TODO reset component
-        console.log('reset', this.selectorStepsModel);
         this.selectorSteps = JSON.parse(JSON.stringify(this.selectorStepsModel));
         this.isBrowseVisible = false;
     }
@@ -319,5 +312,17 @@ export class CommitTemplateSelectorComponent {
                 selected: false
             };
         });
+    }
+
+    private isSelectedRepoSameAsLastSelected(items): boolean {
+        let selectedRepo = this.selectorSteps.repositories.items.filter(repo => repo.selected)[0].url;
+        let lastSelectedRepo = items.length ? items[0].repo : null;
+        return selectedRepo === lastSelectedRepo;
+    }
+
+    private isSelectedBranchSameAsLastSelected(): boolean {
+        let selectedBranch = this.selectorSteps.branches.items.filter(branch => branch.selected)[0].name;
+        let lastSelectedBranch = this.selectorSteps.commits.items.length ? this.selectorSteps.commits.items[0].branch : null;
+        return selectedBranch === lastSelectedBranch;
     }
 }
