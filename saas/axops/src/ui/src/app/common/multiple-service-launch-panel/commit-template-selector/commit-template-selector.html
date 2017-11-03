@@ -8,7 +8,7 @@
                 <li>Templates</li>
             </ul>
             <div class="fr commit-template-selector__help-icon" *ngIf="!showCommitRootLoader">
-                <a (click)="onBrowse(); isBrowseVisible = !isBrowseVisible"><i class="ax-icon-edit-property"></i> {{ 'Browse'| translate | uppercase }}</a>
+                <a (click)="onBrowse()"><i class="ax-icon-edit-property"></i> {{ 'Browse'| translate | uppercase }}</a>
             </div>
             <div class="commit-template-selector__root-loader" *ngIf="showCommitRootLoader">
                 <ax-loader-custom [size]="20"></ax-loader-custom>
@@ -27,18 +27,18 @@
                     </button>
                 </li>
                 <li>
-                    <button axButtonWave class="ax-button" [ngClass]="{'ax-button--base': activePart === 'commits'}" (click)="changeStep('commits')">
+                    <button axButtonWave class="ax-button" [ngClass]="{'ax-button--base': activePart === 'commits'}" (click)="changeStep('commits')" [disabled]="selectorSteps.commits.selectedParent.name === ''">
                         COMMIT <span class="commit-template-selector__alert" *ngIf="selectorSteps.templates.selectedParent.name === ''"></span>
                     </button>
                 </li>
                 <li>
-                    <button axButtonWave class="ax-button" [ngClass]="{'ax-button--base': activePart === 'templates'}" (click)="changeStep('templates')">
+                    <button axButtonWave class="ax-button" [ngClass]="{'ax-button--base': activePart === 'templates'}" (click)="changeStep('templates')" [disabled]="selectorSteps.templates.selectedParent.name === ''">
                         TEMPLATES
                     </button>
                 </li>
             </ul>
-            <div class="fr commit-template-selector__help-icon">
-                <i class="ax-icon-close" (click)="isBrowseVisible = !isBrowseVisible"></i>
+            <div class="fr commit-template-selector__help-icon" [ngClass]="{'commit-template-selector__help-icon--disabled': !selectorSteps.templates.selectedParent.name}">
+                <i class="ax-icon-close" (click)="browseToggle()"></i>
             </div>
         </div>
     </div>

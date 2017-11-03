@@ -83,6 +83,8 @@ export class CommitTemplateSelectorComponent {
     }
 
     public async onBrowse() {
+        this.browseToggle();
+
         this.activePart = 'templates';
         if (this.selectorSteps.repositories.items.length === 0) {
             await this.getRepos();
@@ -182,6 +184,15 @@ export class CommitTemplateSelectorComponent {
             // item.selected = new ShortRevisionPipe().transform(item.revision) === new ShortRevisionPipe().transform(commit.revision);
             item.selected = item.revision === commit.revision;
         });
+
+        if (!commit.revision && this.selectorSteps.commits.items.length) { // select first commit if none is selected
+            this.selectorSteps.commits.items[0].selected = true;
+
+            this.selectorSteps.templates.selectedParent = {
+                name: this.selectorSteps.commits.items[0].revision,
+                url: `${this.selectorSteps.branches.selectedParent.url}/${this.selectorSteps.commits.selectedParent.name}/${this.selectorSteps.commits.items[0].revision}`
+            };
+        }
     }
 
     public selectTemplate(template) {
@@ -221,6 +232,16 @@ export class CommitTemplateSelectorComponent {
     public resetComponent() {
         this.selectorSteps = JSON.parse(JSON.stringify(this.selectorStepsModel));
         this.isBrowseVisible = false;
+    }
+
+    public browseToggle() {
+        if (this.isBrowseVisible && !this.selectorSteps.templates.selectedParent.name) { // don't allow close browse panel if commit is not selected
+            return;
+        }
+
+        this.activePart = 'templates';
+
+        this.isBrowseVisible = !this.isBrowseVisible;
     }
 
     private resetTemplatesSelectedParent() {
@@ -315,14 +336,14 @@ export class CommitTemplateSelectorComponent {
     }
 
     private isSelectedRepoSameAsLastSelected(items): boolean {
-        let selectedRepo = this.selectorSteps.repositories.items.filter(repo => repo.selected)[0].url;
+        let selectedRepo = this.selectorSteps.repositories.items.filter(repo => repo.selected)[0];
         let lastSelectedRepo = items.length ? items[0].repo : null;
-        return selectedRepo === lastSelectedRepo;
+        return (selectedRepo ? selectedRepo.url : '') === lastSelectedRepo;
     }
 
     private isSelectedBranchSameAsLastSelected(): boolean {
-        let selectedBranch = this.selectorSteps.branches.items.filter(branch => branch.selected)[0].name;
+        let selectedBranch = this.selectorSteps.branches.items.filter(branch => branch.selected)[0];
         let lastSelectedBranch = this.selectorSteps.commits.items.length ? this.selectorSteps.commits.items[0].branch : null;
-        return selectedBranch === lastSelectedBranch;
+        return (selectedBranch ? selectedBranch.name : '') === lastSelectedBranch;
     }
 }
