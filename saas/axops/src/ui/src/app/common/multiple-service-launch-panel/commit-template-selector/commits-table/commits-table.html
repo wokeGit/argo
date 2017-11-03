@@ -15,6 +15,16 @@
                 </td>
             </tr>
         </template>
+        <tr *ngIf="!loadData && !commits.length">
+            <td>
+                {{ 'There are no commits for selected branch.' | translate }}
+            </td>
+        </tr>
+        <tr *ngIf="!loadData && isLoadMoreBtnVisible">
+            <td>
+                <button class="ax-button ax-button--base-o" (click)="getMoreCommits()">Load more</button>
+            </td>
+        </tr>
         <tr *ngIf="loadData">
             <div class="table-row__loader">
                 <ax-loader-custom [size]="20"></ax-loader-custom>

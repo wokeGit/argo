@@ -12,6 +12,11 @@
                 </td>
             </tr>
         </template>
+        <tr *ngIf="!loadData && !branches.length">
+            <td>
+                {{ 'There are no branches for selected repo.' | translate }}
+            </td>
+        </tr>
         <tr *ngIf="loadData">
             <div class="table-row__loader">
                 <ax-loader-custom [size]="20"></ax-loader-custom>

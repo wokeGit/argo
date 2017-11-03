@@ -14,6 +14,9 @@ export class CommitsTableComponent {
     @Input()
     public loadData: boolean = false;
 
+    @Input()
+    public isLoadMoreBtnVisible: boolean = true;
+
     @Output()
     public onSelect: EventEmitter<any> = new EventEmitter();
 

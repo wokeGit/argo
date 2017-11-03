@@ -1,3 +1,4 @@
+import * as moment from 'moment';
 import { Component, Output, EventEmitter } from '@angular/core';
 
 import { RepoService, BranchService, CommitsService, TemplateService } from '../../../services';
@@ -6,6 +7,7 @@ import { ShortRevisionPipe } from '../../../pipes';
 import { Commit } from '../../../model';
 
 type SelectorParts = 'repositories' | 'branches' | 'commits' | 'templates';
+const commitPaginationLimit = 20;
 
 @Component({
     selector: 'ax-commit-template-selector',
@@ -15,9 +17,11 @@ type SelectorParts = 'repositories' | 'branches' | 'commits' | 'templates';
 export class CommitTemplateSelectorComponent {
     public activePart: SelectorParts = 'templates';
     public isBrowseVisible: boolean = false;
+    public isLoadMoreVisible: boolean = true;
     public showCommitRootLoader: boolean = false;
     public selectorSteps: any;
-    public selectorStepsModel: any = {
+
+    private selectorStepsModel: any = {
         repositories: {
             isActive: true,
             search: '',
@@ -71,6 +75,7 @@ export class CommitTemplateSelectorComponent {
             showDataLoader: false
         }
     };
+    private commitsPagination = this.resetCommitsPagination();
 
     @Output()
     public updateTemplatesToSubmit: EventEmitter<any> = new EventEmitter();
@@ -104,6 +109,9 @@ export class CommitTemplateSelectorComponent {
                 break;
             case 'commits':
                 if (!this.isSelectedRepoSameAsLastSelected(this.selectorSteps.commits.items) || !this.isSelectedBranchSameAsLastSelected()) {
+                    this.selectorSteps.commits.items = [];
+                    this.resetCommitsPagination();
+
                     await this.getCommits();
                     this.selectCommit({revision: this.selectorSteps.templates.selectedParent.name});
                 }
@@ -174,14 +182,11 @@ export class CommitTemplateSelectorComponent {
 
     public selectCommit(commit) {
         this.selectorSteps.templates.selectedParent = {
-            // name: `${new ShortRevisionPipe().transform(commit.revision)}`,
-            // url: `${this.selectorSteps.branches.selectedParent.url}/${this.selectorSteps.commits.selectedParent.name}/${new ShortRevisionPipe().transform(commit.revision)}`
             name: commit.revision,
             url: `${this.selectorSteps.branches.selectedParent.url}/${this.selectorSteps.commits.selectedParent.name}/${commit.revision}`
         };
 
         this.selectorSteps.commits.items.forEach(item => {
-            // item.selected = new ShortRevisionPipe().transform(item.revision) === new ShortRevisionPipe().transform(commit.revision);
             item.selected = item.revision === commit.revision;
         });
 
@@ -229,6 +234,11 @@ export class CommitTemplateSelectorComponent {
         }
     }
 
+    public getMoreCommits() {
+        this.commitsPagination.maxTime = moment.unix(this.selectorSteps.commits.items[this.selectorSteps.commits.items.length - 1].date - 1);
+        this.getCommits();
+    }
+
     public resetComponent() {
         this.selectorSteps = JSON.parse(JSON.stringify(this.selectorStepsModel));
         this.isBrowseVisible = false;
@@ -240,7 +250,6 @@ export class CommitTemplateSelectorComponent {
         }
 
         this.activePart = 'templates';
-
         this.isBrowseVisible = !this.isBrowseVisible;
     }
 
@@ -306,19 +315,22 @@ export class CommitTemplateSelectorComponent {
     }
 
     private async getCommits() {
-        this.selectorSteps.commits.items = [];
         this.selectorSteps.commits.showDataLoader = true;
         let parameters = {
             repo: this.selectorSteps.branches.selectedParent.url,
             branch: this.selectorSteps.commits.selectedParent.name,
-            offset: 0,
-            limit: 20,
+            maxTime: this.commitsPagination.maxTime,
+            limit: this.commitsPagination.limit + 1,
         };
         await this.commitsService.getCommitsAsync(parameters).toPromise().then(res => {
-            this.selectorSteps.commits.items = res.data.map(commit => {
+            if (res.data.length === 0 || res.data.length <= this.commitsPagination.limit) {
+                this.isLoadMoreVisible = false;
+            }
+            let newItems = res.data.slice(0, this.commitsPagination.limit).map(commit => {
                 commit['selected'] = false;
                 return commit;
             });
+            this.selectorSteps.commits.items = this.selectorSteps.commits.items.concat(newItems);
         });
         this.selectorSteps.commits.showDataLoader = false;
     }
@@ -345,5 +357,12 @@ export class CommitTemplateSelectorComponent {
         let selectedBranch = this.selectorSteps.branches.items.filter(branch => branch.selected)[0];
         let lastSelectedBranch = this.selectorSteps.commits.items.length ? this.selectorSteps.commits.items[0].branch : null;
         return (selectedBranch ? selectedBranch.name : '') === lastSelectedBranch;
+    }
+
+    private resetCommitsPagination() {
+        return {
+            maxTime: moment.unix(Math.round(new Date().getTime() / 1000)),
+            limit: commitPaginationLimit,
+        };
     }
 }
