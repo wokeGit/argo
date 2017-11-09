@@ -16,7 +16,7 @@
         </ul>
     </sliding-panel-header>
     <sliding-panel-body>
-        <div class="panel-box" *ngIf="stepNumber === 1">
+        <div class="panel-box" [ngClass]="{'display-none': stepNumber !== 1}">
             <div class="panel-box__content">
                 <div class="panel-box__title">
                     Select templates to create jobs

@@ -4,7 +4,7 @@ import { Component, Output, EventEmitter } from '@angular/core';
 import { RepoService, BranchService, CommitsService, TemplateService } from '../../../services';
 import { SortOperations } from '../../../common';
 import { ShortRevisionPipe } from '../../../pipes';
-import { Commit } from '../../../model';
+import { Commit, Project, ProjectAction } from '../../../model';
 
 type SelectorParts = 'repositories' | 'branches' | 'commits' | 'templates';
 const commitPaginationLimit = 20;
@@ -200,13 +200,14 @@ export class CommitTemplateSelectorComponent {
         }
     }
 
-    public selectTemplate(template) {
+    public selectTemplate(template, projectInfo?: { project: Project, action: ProjectAction }) {
         template.selected = !template.selected;
         let templatesToSubmit = this.selectorSteps.templates.items.filter(t => {
             return t.selected;
         });
 
-        this.updateTemplatesToSubmit.emit(templatesToSubmit);
+        console.log('selectTemplate projectInfo', projectInfo);
+        this.updateTemplatesToSubmit.emit({templates: templatesToSubmit, projectInfo: projectInfo});
     }
 
     public selectRepoByUrl(url: string) {
@@ -217,13 +218,30 @@ export class CommitTemplateSelectorComponent {
         });
     }
 
-    public init(commit) {
+    public async init(commit, projectInfo?: { project: Project, action: ProjectAction }) {
         this.activePart = 'templates';
 
-        // console.log('commit', commit);
+        // console.log('commit', commit, 'qwe', qwe);
         if (commit.revision && commit.repo && commit.branch) {
             this.setParents(commit);
-            this.getTemplates();
+            await this.getTemplates();
+
+            if (projectInfo) { // required for catalog screen
+                this.selectorSteps.templates.items.forEach(template => {
+                    if (projectInfo.action.template === template.name) {
+                        let projectParams = projectInfo.action.parameters || {};
+                        template.selected = true;
+                        let templateInputParams = (template.inputs || {}).parameters || {};
+                        for (let paramName of Object.keys(templateInputParams)) {
+                            if (projectParams.hasOwnProperty(paramName)) {
+                                templateInputParams[paramName].default = projectParams[paramName];
+                            }
+                        }
+                    }
+                });
+            }
+
+            this.selectTemplate(this.selectorSteps.templates.items, projectInfo);
         } else {
             this.showCommitRootLoader = true;
             this.commitsService.getCommitByRevision(commit.revision).subscribe((c: Commit) => {
@@ -304,14 +322,17 @@ export class CommitTemplateSelectorComponent {
             repo: commit ? commit.repo : this.selectorSteps.branches.selectedParent.url,
             branch: commit ? commit.branch || commit.branches[0] : this.selectorSteps.commits.selectedParent.name,
         };
+
         // console.log('parameters', parameters);
         await this.templateService.getTemplatesAsync(parameters, false).toPromise().then(res => {
             this.selectorSteps.templates.items = res.data.map(template => {
                 template['selected'] = false;
                 return template;
             });
+
+            this.selectorSteps.templates.showDataLoader = false;
         });
-        this.selectorSteps.templates.showDataLoader = false;
+
     }
 
     private async getCommits() {

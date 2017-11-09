@@ -40,10 +40,10 @@ export class MultipleServiceLaunchPanelComponent {
     public allFormsHtml: HtmlForm[] = [];
     public selectedBranch: string;
     public selcetedRepo: string;
-    public isBranchEditable: boolean;
     public search: string;
     public selectedTab: string = MULTIPLE_SERVICE_LAUNCH_PANEL_TABS.PARAMETERS;
 
+    private isBranchEditable: boolean;
     private session: Session = new Session();
     private allForms: FormGroup;
     private subscription: Subscription;
@@ -62,13 +62,20 @@ export class MultipleServiceLaunchPanelComponent {
                 private router: Router) {
     }
 
-    openPanel(
+    get isActiveFormEmpty(): boolean {
+        return this.allForms.controls[this.activeElementId] && Object.keys(this.allForms.controls[this.activeElementId]['controls']).length === 0;
+    }
+
+    get projectTemplate(): Template {
+        return this.templates.find(template => template.name === this.projectInfo.action.template);
+    }
+
+    public openPanel(
             commit: Commit,
             options: Task | Template | {project: Project, action: ProjectAction},
             withCommitOnly: boolean,
             artifacts: Artifact[],
             resubmit: boolean) {
-        // console.log('o', commit, options)
         this.selectedTab = MULTIPLE_SERVICE_LAUNCH_PANEL_TABS.PARAMETERS;
         this.commit = new Commit();
         this.artifacts = artifacts || [];
@@ -88,7 +95,6 @@ export class MultipleServiceLaunchPanelComponent {
             }
         });
 
-        let task = null;
         this.task = null;
         this.projectInfo = null;
         this.resubmit = resubmit;
@@ -96,12 +102,10 @@ export class MultipleServiceLaunchPanelComponent {
 
         this.withCommitOnly = withCommitOnly;
         if (options) {
-            // console.log('options', options)
-            if (options['project'] && options['action']) {
+            if (options['project'] && options['action']) { // this is required for CATALOG screen
                 this.projectInfo = <{ project: Project, action: ProjectAction }> options;
             } else if (options['template']) { // resubmit failed
                 this.task = <Task> options;
-                task = <Task> options;
             } else {
                 this.templates = [ Object.assign({}, <Template> options, { selected: true }) ];
                 this.isVisibleSelectServiceTemplatesPanel = true;
@@ -125,23 +129,26 @@ export class MultipleServiceLaunchPanelComponent {
 
         if (commit) {
             this.isVisibleSelectServiceTemplatesPanel = true;
-            this.commitTemplateSelector.init(commit);
+            console.log('projectInfo', this.projectInfo);
+            this.commitTemplateSelector.init(commit, this.projectInfo);
         }
     }
 
-    loadTemplates(commit: Commit) {
-        this.commit = commit;
-        this.selcetedRepo = commit.repo;
-        this.selectedBranch = commit.branch || commit.branches[0];
-        this.isVisibleSelectServiceTemplatesPanel = true;
+    // loadTemplates(commit: Commit) {
+    //     this.commit = commit;
+    //     this.selcetedRepo = commit.repo;
+    //     this.selectedBranch = commit.branch || commit.branches[0];
+    //     this.isVisibleSelectServiceTemplatesPanel = true;
+    //
+    //     this.getTemplates(commit.repo);
+    // }
 
-        this.getTemplates(commit.repo);
-    }
-
-    selectBranch(branch: string) {
-        this.selectedBranch = branch;
-        this.getTemplates(this.commit.repo);
-    }
+    // selectBranch(branch: string) {
+    //     console.log('!!! selectBranch', branch);
+    //     this.selectedBranch = branch;
+    //     // this.getTemplates(this.commit.repo);
+    //     this.commitTemplateSelector.init(this.commit);
+    // }
 
     editRepoBranch() {
         this.showChangeRepoBranchPanel = true;
@@ -165,53 +172,53 @@ export class MultipleServiceLaunchPanelComponent {
         this.subscription.unsubscribe();
     }
 
-    getTemplates(repo: string) {
-        if (this.task) {
-            let template = Object.assign({ selected: true }, this.task.template);
-            this.templates = [ template ];
-            this.templatesToSubmit = [ template ];
-            this.prepareForms(this.templatesToSubmit, this.task.arguments);
-        } else {
-            this.templateLoader = true;
-            this.templates = [];
-            let params = {repo_branch: `${repo}_${this.selectedBranch}`};
-            if (this.withCommitOnly) {
-                params['commit'] = true;
-            }
-            this.templateService.getTemplatesAsync(params, false).subscribe(res => {
-                this.templates = res.data || [];
-                if (this.artifacts.length) {
-                    this.templates = this.filterTemplatesByArtifact(this.templates, this.artifacts);
-                }
-
-                this.templateLoader = false;
-                if (this.projectInfo) {
-                    this.templates.forEach(template => {
-                        if (this.projectInfo.action.template === template.name) {
-                            let projectParams = this.projectInfo.action.parameters || {};
-                            template.selected = true;
-                            let templateInputParams = (template.inputs || {}).parameters || {};
-                            for (let paramName of Object.keys(templateInputParams)) {
-                                if (projectParams.hasOwnProperty(paramName)) {
-                                    templateInputParams[paramName].default = projectParams[paramName];
-                                }
-                            }
-                        }
-                    });
-                    this.next();
-                }
-            }, error => {
-                this.templateLoader = false;
-            });
-        }
-    }
+    // getTemplates(repo: string) {
+    //     if (this.task) {
+    //         let template = Object.assign({ selected: true }, this.task.template);
+    //         this.templates = [ template ];
+    //         this.templatesToSubmit = [ template ];
+    //         this.prepareForms(this.templatesToSubmit, this.task.arguments);
+    //     } else {
+    //         this.templateLoader = true;
+    //         this.templates = [];
+    //         let params = {repo_branch: `${repo}_${this.selectedBranch}`};
+    //         if (this.withCommitOnly) {
+    //             params['commit'] = true;
+    //         }
+    //         this.templateService.getTemplatesAsync(params, false).subscribe(res => {
+    //             this.templates = res.data || [];
+    //             if (this.artifacts.length) {
+    //                 this.templates = this.filterTemplatesByArtifact(this.templates, this.artifacts);
+    //             }
+    //
+    //             this.templateLoader = false;
+    //             if (this.projectInfo) {
+    //                 this.templates.forEach(template => {
+    //                     if (this.projectInfo.action.template === template.name) {
+    //                         let projectParams = this.projectInfo.action.parameters || {};
+    //                         template.selected = true;
+    //                         let templateInputParams = (template.inputs || {}).parameters || {};
+    //                         for (let paramName of Object.keys(templateInputParams)) {
+    //                             if (projectParams.hasOwnProperty(paramName)) {
+    //                                 templateInputParams[paramName].default = projectParams[paramName];
+    //                             }
+    //                         }
+    //                     }
+    //                 });
+    //                 this.next();
+    //             }
+    //         }, error => {
+    //             this.templateLoader = false;
+    //         });
+    //     }
+    // }
 
     filterTemplatesByArtifact(templates: Template[], artifacts: Artifact[]): Template[] {
         let clonedTemplates = JSON.parse(JSON.stringify(templates));
         let filteredTemplates = [];
         this.allowedYamlParameters = [];
 
-        // I have to go throught all artifacts and get all templates with matching parameters
+        // I have to go through all artifacts and get all templates with matching parameters
         // the prefix of the default value is: "%%artifacts.workflow." or "%%artifacts.tag." and postfix "$ARTIFACT_NAME%%"
         artifacts.forEach((artifact: Artifact) => {
             this.allowedYamlParameters.push([`%%artifacts.workflow.`, `.${artifact.name}%%`, artifact]);
@@ -237,39 +244,32 @@ export class MultipleServiceLaunchPanelComponent {
         return filteredTemplates.filter((v, i, a) => a.indexOf(v) === i);
     }
 
-    get projectTemplate(): Template {
-        return this.templates.find(template => template.name === this.projectInfo.action.template);
-    }
 
-    selectAllTemplates() {
-        this.allSelected = !this.allSelected;
-        this.selectedItems = 0;
-
-        this.templates.forEach(p => {
-            p.selected = this.allSelected;
-
-            if (this.allSelected) {
-                this.selectedItems++;
-            }
-        });
-    }
-
-    selectTemplate(template) {
-        this.allSelected = false;
-        template.selected = !template.selected;
-
-        template.selected ? this.selectedItems++ : this.selectedItems--;
-    }
+    // selectAllTemplates() {
+    //     this.allSelected = !this.allSelected;
+    //     this.selectedItems = 0;
+    //
+    //     this.templates.forEach(p => {
+    //         p.selected = this.allSelected;
+    //
+    //         if (this.allSelected) {
+    //             this.selectedItems++;
+    //         }
+    //     });
+    // }
+    //
+    // selectTemplate(template) {
+    //     this.allSelected = false;
+    //     template.selected = !template.selected;
+    //
+    //     template.selected ? this.selectedItems++ : this.selectedItems--;
+    // }
 
     selectElement(index: number) {
         this.activeElementId = index;
     }
 
     isAnyTemplateSelected() {
-        // return this.templates.find(item => {
-        // return this.templatesToSubmit.find(item => {
-        //     return item['selected'] === true;
-        // }) !== undefined;
         return !!this.templatesToSubmit.length;
     }
 
@@ -317,24 +317,15 @@ export class MultipleServiceLaunchPanelComponent {
         }
     }
 
-    get isActiveFormEmpty(): boolean {
-        return this.allForms.controls[this.activeElementId] && Object.keys(this.allForms.controls[this.activeElementId]['controls']).length === 0;
-    }
 
-    listParameters(formControl: FormControl) {
-        let parameters: any = {};
-        _.forOwn(formControl, (value, key) => {
-            parameters[`parameters.${key}`] = value.value;
-        });
 
-        return parameters;
-    }
+    public updateTemplatesToSubmit(obj: {templates: Template[], projectInfo: { project: Project, action: ProjectAction }}) {
+        console.log('obj', obj);
+        this.templatesToSubmit = obj.templates;
 
-    public updateTemplatesToSubmit(templates) {
-        console.log('templates', templates);
-        this.templatesToSubmit = templates;
-
-        // this.getTemplates(repo);
+        if (obj.projectInfo) {
+            this.next();
+        }
     }
 
     public selectTab(tabName: string) {
@@ -352,9 +343,20 @@ export class MultipleServiceLaunchPanelComponent {
     }
 
     public selectedBranchChanged(branch: Branch) {
+        console.log('!!!! selectedBranchChanged', branch);
         this.selcetedRepo = branch.repo;
         this.selectedBranch = branch.name;
-        this.getTemplates(branch.repo);
+        // this.getTemplates(branch.repo);
+        this.commitTemplateSelector.init(branch);
+    }
+
+    private listParameters(formControl: FormControl) {
+        let parameters: any = {};
+        _.forOwn(formControl, (value, key) => {
+            parameters[`parameters.${key}`] = value.value;
+        });
+
+        return parameters;
     }
 
     private prepareForms(templates: Template[], resubmitFailedParameters?: any) {
