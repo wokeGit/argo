@@ -3,7 +3,7 @@ import { Component, ViewChild, OnInit, OnDestroy } from '@angular/core';
 import { RouterOutlet, Router, ActivatedRoute } from '@angular/router';
 import { Subject, Subscription, Observable } from 'rxjs';
 //
-// import { DropdownMenuSettings, SlidingPanelService, DateRange } from 'argo-ui-lib/src/components';
+import { DropdownMenuSettings, SlidingPanelService, DateRange } from 'argo-ui-lib/src/components';
 // import { GlobalSearchSetting, LaunchPanelService, MultipleServiceLaunchPanelComponent } from '../../common';
 // import {
 //     NotificationService,
