@@ -15,7 +15,7 @@
         </div>
         <div class="global-search__dropdown" *ngIf="isDropdownVisible">
             <ul class="global-search__list" *ngIf="loadingSuggestion && searchForm.value.inputControl || checkIfThereIsHistoryOrSuggestions()">
-                <template ngFor let-item let-i="index" [ngForOf]="dropdownList">
+                <ng-template ngFor let-item let-i="index" [ngForOf]="dropdownList">
                     <li class="global-search__list-item"
                         [ngClass]="{'global-search__list-item--selected': isSelected(i), 'global-search__list-item--inline': item.type === 'navigationShortcut'}"
                         (mouseover)="selectElement(i)"
@@ -45,9 +45,9 @@
                     </li>
                     <li class="global-search__list-item global-search__list-item--loader"
                         *ngIf="(i === (searchInCategories.length - 1)) && loadingSuggestion && !!searchForm.value.inputControl">
-                        <ax-loader-custom [size]="18" [position]="'left'"></ax-loader-custom>
+                        <!--<ax-loader-custom [size]="18" [position]="'left'"></ax-loader-custom>-->
                     </li>
-                </template>
+                </ng-template>
             </ul>
         </div>
     </div>

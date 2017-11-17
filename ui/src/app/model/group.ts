@@ -1,4 +1,4 @@
-import { USER_GROUPS } from '.';
+import { USER_GROUPS } from './user';
 
 export class Group {
     omitempty: string[] = [];

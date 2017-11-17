@@ -8,12 +8,14 @@ import {
     SlidingPanelBodyDirective, SlidingPanelFooterDirective,
 } from './sliding-panel/sliding-panel.component';
 import { SlidingPanelService } from './sliding-panel/sliding-panel.service';
+import { SwipeCheckboxComponent } from './swipe-checkbox/swipe-checkbox.component';
 
 let components = [
     SlidingPanelComponent,
     SlidingPanelHeaderDirective,
     SlidingPanelBodyDirective,
     SlidingPanelFooterDirective,
+    SwipeCheckboxComponent,
 ];
 
 @NgModule({

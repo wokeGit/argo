@@ -1,4 +1,5 @@
-import { Deployment, ExternalRoute } from '.';
+import { Deployment} from './deployment';
+import { ExternalRoute } from '.';
 
 export const APPLICATION_STATUSES = {
     WAITING: 'Waiting',

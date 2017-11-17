@@ -3,19 +3,19 @@ import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 
-// import { GuiComponentsModule } from 'argo-ui-lib/src/components';
+import { GuiComponentsModule } from '../ui-lib/components.module';
 
 import { GlobalSearchInputComponent } from './global-search-input/global-search-input.component';
 
 let components: any[] = [
-    GlobalSearchInputComponent,
+    // GlobalSearchInputComponent,
 ];
 
 @NgModule({
     declarations: components,
-    // exports: components.concat(GuiComponentsModule),
+    exports: components.concat(GuiComponentsModule),
     imports: [
-        // GuiComponentsModule,
+        GuiComponentsModule,
         CommonModule,
         FormsModule,
         ReactiveFormsModule,

@@ -8,6 +8,7 @@ import { UsersService } from './users.service';
 import { TrackingService } from './tracking.service';
 import { AxHeaders } from './headers';
 import { User, USER_GROUPS } from '../model';
+import * as $ from 'jquery';
 
 const CURRENT_USER_KEY = 'ax-current-user';
 

@@ -18,7 +18,7 @@ import { NavigationComponent } from './navigation/navigation.component';
 // import { ToolbarComponent } from './toolbar/toolbar.component';
 
 // import { PipesModule } from '../../pipes';
-// import { ComponentsModule } from '../../common';
+import { ComponentsModule } from '../common';
 
 @NgModule({
     declarations: [
@@ -35,7 +35,7 @@ import { NavigationComponent } from './navigation/navigation.component';
     ],
     imports: [
         // PipesModule,
-        // ComponentsModule,
+        ComponentsModule,
         CommonModule,
         RouterModule,
         FormsModule,

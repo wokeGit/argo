@@ -6,6 +6,8 @@ import { User } from '../model';
 
 import { SystemService } from './system.service';
 
+import * as scriptjs from 'scriptjs';
+
 let initializationPromise: Promise<any> = null;
 
 const PORTAL_URL = 'https://portal.applatix.com/api';
@@ -45,8 +47,8 @@ export class TrackingService {
 
     private loadGa(): Promise<any> {
         return new Promise(resolve => {
-            let script = require('scriptjs');
-            script('https://www.google-analytics.com/analytics.js', () => {
+            // let script = require('scriptjs');
+          scriptjs('https://www.google-analytics.com/analytics.js', () => {
                 resolve(window['ga']);
             });
         });

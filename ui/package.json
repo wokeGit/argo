@@ -26,7 +26,8 @@
     "jquery": "^3.2.1",
     "rxjs": "^5.5.2",
     "zone.js": "^0.8.14",
-    "argo-ui-lib": "git+https://github.com/argoproj/ui-lib.git#v1.0.8"
+    "argo-ui-lib": "git+https://github.com/argoproj/ui-lib.git#v1.0.8",
+    "scriptjs": "^2.5.8"
   },
   "devDependencies": {
     "@angular/cli": "1.5.0",
