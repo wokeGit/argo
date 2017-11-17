@@ -1,7 +1,7 @@
 @import 'node_modules/owl.carousel/dist/assets/owl.carousel';
 @import 'node_modules/nvd3/build/nv.d3.min';
 @import 'node_modules/font-awesome-animation/dist/font-awesome-animation.min';
-@import 'node_modules/argo-ui-lib/src/assets/styles/gui-lib';
+//@import 'node_modules/argo-ui-lib/src/assets/styles/gui-lib';
 
 @import './config';
 @import './icons';
@@ -138,12 +138,12 @@ div.validation-default-message, div.validation-message {
 .toast-error {
   background-color: #FBDEDB;
   border-color: #C0392B;
- 
+
   .toast-content{
     color:#333;
     font-size:14px;
   }
-  
+
 }
 
 .no-bottom-border{
