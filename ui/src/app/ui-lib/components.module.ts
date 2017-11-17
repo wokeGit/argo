@@ -9,6 +9,7 @@ import {
 } from './sliding-panel/sliding-panel.component';
 import { SlidingPanelService } from './sliding-panel/sliding-panel.service';
 import { SwipeCheckboxComponent } from './swipe-checkbox/swipe-checkbox.component';
+import { LoaderCustomComponent } from './loader-custom/loader-custom.component';
 
 let components = [
     SlidingPanelComponent,
@@ -16,6 +17,7 @@ let components = [
     SlidingPanelBodyDirective,
     SlidingPanelFooterDirective,
     SwipeCheckboxComponent,
+    LoaderCustomComponent
 ];
 
 @NgModule({
