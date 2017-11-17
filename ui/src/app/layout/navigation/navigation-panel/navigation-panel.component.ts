@@ -5,7 +5,7 @@ import { Subscription } from 'rxjs/Rx';
 @Component({
     selector: 'ax-navigation-panel',
     templateUrl: './navigation-panel.component.html',
-    styles: [ require('./navigation-panel.component.scss') ],
+    styles: [ './navigation-panel.component.scss' ],
 })
 
 export class NavigationPanelComponent implements AfterContentInit, OnDestroy {

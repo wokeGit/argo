@@ -10,7 +10,7 @@ import { SortOperations } from '../../common/sortOperations/sortOperations';
 @Component({
     selector: 'ax-navigation',
     templateUrl: './navigation.html',
-    styles: [ require('./navigation.component.scss') ],
+    styles: [ './navigation.component.scss' ],
 })
 export class NavigationComponent implements OnInit, OnDestroy {
 

@@ -31,9 +31,9 @@ export class ViewPreferencesService {
         return this.authenticationService.getCurrentUser().then(user => this.deserializePreferences(user.view_preferences));
     }
 
-    public getViewPreferencesObservable(): Observable<ViewPreferences & { changeInfo?: { viewFavoriteUpdated: boolean } }> {
-        return Observable.merge(this.onPreferencesUpdated, Observable.fromPromise(this.getViewPreferences()));
-    }
+    // public getViewPreferencesObservable(): Observable<ViewPreferences & { changeInfo?: { viewFavoriteUpdated: boolean } }> {
+    //     return Observable.merge(this.onPreferencesUpdated, Observable.fromPromise(this.getViewPreferences()));
+    // }
 
     public updateViewPreferences(callback: (viewPreferences: ViewPreferences) => any): Promise<boolean> {
         return this.getViewPreferences().then(viewPreferences => {
