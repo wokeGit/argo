@@ -4,15 +4,15 @@
     <!--<ax-notification></ax-notification>-->
     <!--<ax-notifications-panel [show]="showNotificationsCenter" (onClose)="toggleNotificationsCenter(false)"></ax-notifications-panel>-->
     <!--<ax-navigation [branchNavPanelUrl]="layoutSettings?.branchNavPanelUrl" [branchNavPanelOpened]="branchNavPanelOpened" (onCloseNavPanel)="closeBranchNavPanel()" (onToggleNav)="toggleNav($event)"></ax-navigation>-->
-    <!--<div class="content-wrapper" [class.hidden-scrollbar]="hiddenScrollbar" [class.panel-off-canvas]="openedPanelOffCanvas">-->
+    <div class="content-wrapper" [class.hidden-scrollbar]="hiddenScrollbar" [class.panel-off-canvas]="openedPanelOffCanvas">
         <!--<ax-top-bar [settings]="layoutSettings"-->
                     <!--(onOpenNotificationsCenter)="toggleNotificationsCenter(true)"-->
                     <!--[openedNotificationsCenter]="showNotificationsCenter"-->
                     <!--[animateNotificationIcon]="animateNotificationIcon"></ax-top-bar>-->
         <!--<ax-toolbar [settings]="layoutSettings" (onOpenBranchNavPanel)="openBranchNavPanel()"></ax-toolbar>-->
-        <!--<router-outlet></router-outlet>-->
+        <router-outlet></router-outlet>
         <!--<ax-loader></ax-loader>-->
-    <!--</div>-->
+    </div>
 </div>
 <!--<ax-multiple-service-launch-panel></ax-multiple-service-launch-panel>-->
 

@@ -61,8 +61,8 @@ export class LayoutComponent {
     // @ViewChild(MultipleServiceLaunchPanelComponent)
     // public multipleServiceLaunchPanel: MultipleServiceLaunchPanelComponent;
     // public globalSearch: GlobalSearchSetting;
-    // public hiddenScrollbar: boolean;
-    // public openedPanelOffCanvas: boolean;
+    public hiddenScrollbar: boolean;
+    public openedPanelOffCanvas: boolean;
     // public repos: string[] = [];
     // public reposLoaded: boolean;
     // public showNotificationsCenter: boolean;
@@ -81,15 +81,15 @@ export class LayoutComponent {
     //         private viewPreferencesService: ViewPreferencesService,
     //         private authenticationService: AuthenticationService
     ) {
-    //
-    //     this.subscriptions.push(this.slidingPanelService.panelOpened.subscribe(
-    //         isHidden => setTimeout(() => this.hiddenScrollbar = isHidden)));
-    //
-    //     this.subscriptions.push(this.slidingPanelService.panelOffCanvasOpened.subscribe(
-    //         openedPanelOffCanvas => setTimeout(() => this.openedPanelOffCanvas = openedPanelOffCanvas),
-    //     ));
-    //
-    //
+        //
+        // this.subscriptions.push(this.slidingPanelService.panelOpened.subscribe(
+        //     isHidden => setTimeout(() => this.hiddenScrollbar = isHidden)));
+        //
+        // this.subscriptions.push(this.slidingPanelService.panelOffCanvasOpened.subscribe(
+        //     openedPanelOffCanvas => setTimeout(() => this.openedPanelOffCanvas = openedPanelOffCanvas),
+        // ));
+        //
+
     //     this.authenticationService.getCurrentUser().then(user => {
     //         this.subscriptions.push(Observable.merge(
     //             this.notificationService.getEventsStream(user.username),
