@@ -2,15 +2,16 @@
 import { Component, ViewChild, OnInit, OnDestroy } from '@angular/core';
 import { RouterOutlet, Router, ActivatedRoute } from '@angular/router';
 import { Subject, Subscription, Observable } from 'rxjs';
-//
+
+import { SlidingPanelService } from '../ui-lib/sliding-panel/sliding-panel.service';
 // import { DropdownMenuSettings, SlidingPanelService, DateRange } from 'argo-ui-lib/src/components';
 // import { GlobalSearchSetting, LaunchPanelService, MultipleServiceLaunchPanelComponent } from '../../common';
-// import {
+import {
 //     NotificationService,
 //     PlaygroundInfoService,
 //     ViewPreferencesService,
 //     AuthenticationService,
-// } from '../../services';
+} from '../../services';
 // import { Task, Application } from '../../model';
 //
 export interface LayoutSettings {
@@ -69,26 +70,26 @@ export class LayoutComponent {
     // public mostRecentEventTime: moment.Moment = moment.unix(0);
     // public mostRecentNotificationsViewTime: moment.Moment = moment.unix(0);
     public openedNav: boolean;
-    // public branchNavPanelOpened = false;
+    public branchNavPanelOpened = false;
 
     private subscriptions: Subscription[] = [];
 
     constructor(
             // private launchPanelService: LaunchPanelService,
-    //         private slidingPanelService: SlidingPanelService,
+            private slidingPanelService: SlidingPanelService,
     //         private playgroundInfoService: PlaygroundInfoService,
     //         private notificationService: NotificationService,
     //         private viewPreferencesService: ViewPreferencesService,
     //         private authenticationService: AuthenticationService
     ) {
-        //
-        // this.subscriptions.push(this.slidingPanelService.panelOpened.subscribe(
-        //     isHidden => setTimeout(() => this.hiddenScrollbar = isHidden)));
-        //
-        // this.subscriptions.push(this.slidingPanelService.panelOffCanvasOpened.subscribe(
-        //     openedPanelOffCanvas => setTimeout(() => this.openedPanelOffCanvas = openedPanelOffCanvas),
-        // ));
-        //
+
+        this.subscriptions.push(this.slidingPanelService.panelOpened.subscribe(
+            isHidden => setTimeout(() => this.hiddenScrollbar = isHidden)));
+
+        this.subscriptions.push(this.slidingPanelService.panelOffCanvasOpened.subscribe(
+            openedPanelOffCanvas => setTimeout(() => this.openedPanelOffCanvas = openedPanelOffCanvas),
+        ));
+
 
     //     this.authenticationService.getCurrentUser().then(user => {
     //         this.subscriptions.push(Observable.merge(
@@ -121,14 +122,14 @@ export class LayoutComponent {
         this.subscriptions = [];
     }
 
-    // public openBranchNavPanel() {
-    //     this.branchNavPanelOpened = true;
-    // }
-    //
-    // public closeBranchNavPanel() {
-    //     this.branchNavPanelOpened = false;
-    // }
-    //
+    public openBranchNavPanel() {
+        this.branchNavPanelOpened = true;
+    }
+
+    public closeBranchNavPanel() {
+        this.branchNavPanelOpened = false;
+    }
+
     // public toggleNotificationsCenter(status: boolean) {
     //     this.showNotificationsCenter = status;
     //     if (this.showNotificationsCenter) {
