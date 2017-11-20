@@ -1,10 +1,15 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { HttpModule } from '@angular/http';
 import { NgModule } from '@angular/core';
+import { HttpModule } from '@angular/http';
+import { Observable } from 'rxjs/Observable';
+
+import 'rxjs/add/observable/interval';
+import 'rxjs/add/operator/take';
+import 'rxjs/add/operator/map';
+import 'rxjs/add/operator/bufferCount';
 
 import { AppRoutingModule } from './app-routing.module';
 import { LayoutModule } from './layout/layout.module';
-// import { GuiComponentsModule } from './ui-lib/components.module';
 import { ComponentsModule } from './common/components.module';
 
 import { AppComponent } from './app.component';
@@ -28,7 +33,6 @@ import { ToolService } from './services/tool.service';
     LayoutModule,
     ComponentsModule,
     HttpModule
-    // GuiComponentsModule
   ],
   providers: [
     ViewPreferencesService,
@@ -39,7 +43,7 @@ import { ToolService } from './services/tool.service';
     SystemService,
     BranchService,
     RepoService,
-    ToolService,
+    ToolService
   ],
   bootstrap: [AppComponent]
 })

@@ -1,0 +1,32 @@
+.project-launch-button {
+    position: relative;
+    display: inline-block;
+    min-width: 120px;
+    max-width: 100%;
+
+    .ax-button {
+        padding-left: 3em;
+        padding-right: 3em;
+    }
+
+    &__dropdown-caret {
+        position: absolute;
+        z-index: 2;
+        right: 1em;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 2em;
+        padding-top: 1em;
+        padding-bottom: 1em;
+    }
+
+    &__loader {
+        position: absolute;
+        left: 1em;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 2em;
+        padding-top: 1em;
+        padding-bottom: 1em;
+    }
+}

@@ -1,0 +1,95 @@
+{
+  "type": "workflow",
+  "version": "1",
+  "name": "test-basic-sequential-workflow",
+  "description": "Basic workflow with two sequential steps",
+  "id": "4c260442-8b7a-5708-5273-0da644ba78ff",
+  "repo": "https://github.com/argoproj/argo.git",
+  "branch": "unittests",
+  "revision": "629e1b5fce58a1b659b14459bc76e4dc2b2d0db7",
+  "inputs": {
+    "parameters": {
+      "COMMIT": {
+        "default": "%%session.commit%%"
+      },
+      "REPO": {
+        "default": "%%session.repo%%"
+      }
+    }
+  },
+  "steps": [
+    {
+      "checkout": {
+        "template": {
+          "type": "container",
+          "version": "1",
+          "name": "noop-container",
+          "description": "Container which does nothing but sleep for 2 minutes",
+          "id": "9515d337-1f8b-5d6e-7633-be790d460b64",
+          "repo": "https://github.com/argoproj/argo.git",
+          "branch": "unittests",
+          "revision": "629e1b5fce58a1b659b14459bc76e4dc2b2d0db7",
+          "image": "alpine:latest",
+          "command": [
+            "sh",
+            "-c"
+          ],
+          "args": [
+            "echo 'sleeping for 2 minutes' ; sleep 120; echo 'done'"
+          ]
+        },
+        "status": 0,
+        "status_string": "",
+        "cost": 0,
+        "create_time": 0,
+        "launch_time": 0,
+        "init_time": 0,
+        "average_init_time": 0,
+        "end_time": 0,
+        "wait_time": 0,
+        "run_time": 0,
+        "average_runtime": 0,
+        "artifact_tags": "",
+        "is_submitted": false
+      }
+    },
+    {
+      "axdb_build": {
+        "template": {
+          "type": "container",
+          "version": "1",
+          "name": "noop-container",
+          "description": "Container which does nothing but sleep for 2 minutes",
+          "id": "9515d337-1f8b-5d6e-7633-be790d460b64",
+          "repo": "https://github.com/argoproj/argo.git",
+          "branch": "unittests",
+          "revision": "629e1b5fce58a1b659b14459bc76e4dc2b2d0db7",
+          "image": "alpine:latest",
+          "command": [
+            "sh",
+            "-c"
+          ],
+          "args": [
+            "echo 'sleeping for 2 minutes' ; sleep 120; echo 'done'"
+          ]
+        },
+        "status": 0,
+        "status_string": "",
+        "cost": 0,
+        "create_time": 0,
+        "launch_time": 0,
+        "init_time": 0,
+        "average_init_time": 0,
+        "end_time": 0,
+        "wait_time": 0,
+        "run_time": 0,
+        "average_runtime": 0,
+        "artifact_tags": "",
+        "is_submitted": false
+      }
+    }
+  ],
+  "cost": 0,
+  "jobs_fail": 0,
+  "jobs_success": 1
+}

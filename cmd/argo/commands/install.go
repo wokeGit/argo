@@ -25,6 +25,7 @@ func init() {
 	installCmd.Flags().StringVar(&installArgs.configMap, "configmap", common.DefaultConfigMapName(common.DefaultControllerDeploymentName), "install controller using preconfigured configmap")
 	installCmd.Flags().StringVar(&installArgs.controllerImage, "controller-image", common.DefaultControllerImage, "use a specified controller image")
 	installCmd.Flags().StringVar(&installArgs.executorImage, "executor-image", common.DefaultExecutorImage, "use a specified executor image")
+	installCmd.Flags().StringVar(&installArgs.serviceAccount, "service-account", "", "use a specified service account for the workflow-controller deployment")
 }
 
 type installFlags struct {
@@ -33,6 +34,7 @@ type installFlags struct {
 	configMap       string // --configmap
 	controllerImage string // --controller-image
 	executorImage   string // --executor-image
+	serviceAccount  string // --service-account
 }
 
 var installArgs installFlags
@@ -45,9 +47,9 @@ var installCmd = &cobra.Command{
 
 func install(cmd *cobra.Command, args []string) {
 	fmt.Printf("Installing into namespace '%s'\n", installArgs.namespace)
+	installCRD()
 	installConfigMap()
 	installController()
-	installCRD()
 }
 
 func installConfigMap() {
@@ -109,6 +111,7 @@ func installController() {
 					},
 				},
 				Spec: apiv1.PodSpec{
+					ServiceAccountName: installArgs.serviceAccount,
 					Containers: []apiv1.Container{
 						{
 							Name:    installArgs.name,

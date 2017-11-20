@@ -1,0 +1,39 @@
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+    name: s3proxy-deployment
+spec:
+    replicas: 1
+    template:
+        metadata:
+            labels:
+                app: s3proxy-deployment
+                tier: platform
+                role: axcritical
+            annotations:
+        spec:
+            containers:
+              - name: s3proxy
+                image: andrewgaul/s3proxy
+                env:
+                  - name: S3PROXY_AUTHORIZATION
+                    value: "none"
+                  - name: LOG_LEVEL
+                    value: "trace"
+                ports:
+                  - containerPort: 80
+                resources:
+                    requests:
+                        cpu: 100m
+                        memory: 150Mi
+                    limits:
+                        cpu: 100m
+                        memory: 150Mi
+                volumeMounts:
+                  - mountPath: "/data"
+                    name: s3proxy-data
+            volumes:
+              - name: s3proxy-data
+                persistentVolumeClaim:
+                    claimName: s3proxy-pvc

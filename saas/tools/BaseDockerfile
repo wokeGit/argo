@@ -1,0 +1,4 @@
+From argobase/mini-debian:9.1
+
+ADD base-install.sh /tmp/base-install.sh
+RUN /tmp/base-install.sh && rm /tmp/base-install.sh

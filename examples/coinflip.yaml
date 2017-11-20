@@ -27,12 +27,12 @@ spec:
 
   - name: heads
     container:
-      image: docker/whalesay:latest
+      image: alpine:3.6
       command: [sh, -c]
       args: ["echo \"it was heads\""]
 
   - name: tails
     container:
-      image: docker/whalesay:latest
+      image: alpine:3.6
       command: [sh, -c]
       args: ["echo \"it was tails\""]

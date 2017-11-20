@@ -1,3 +1,5 @@
+export * from './base.module';
+
 export { ComponentsModule } from './components.module';
 export * from './view-utils';
 

@@ -1,0 +1,32 @@
+<div class="ax-catalog-overview">
+    <div class="content" *ngIf="!searchString">
+        <ax-tabs [selectedTabKey]="selectedCategory" [fixedWidth]="true">
+            <ax-tab *ngFor="let category of categories" [tabKey]="category.name" [tabTitle]="category.name"
+                    [isOnlyContentScrollable]="true" [extraVerticalScrollPadding]="156">
+                <div class="ax-container">
+                    <div class="ax-catalog-overview__list">
+                        <div *ngFor="let item of category.projects" class="ax-catalog-overview__project">
+                            <ax-project-icon [project]="item"></ax-project-icon>
+                        </div>
+                    </div>
+                </div>
+            </ax-tab>
+        </ax-tabs>
+    </div>
+    <div class="content" *ngIf="searchString">
+        <div class="ax-container">
+            <div class="ax-catalog-overview__search-list">
+                <div *ngFor="let item of allProjects" class="ax-catalog-overview__project">
+                    <ax-project-icon [project]="item"></ax-project-icon>
+                </div>
+                <div class="ax-table-list ax-table-list--clickable projects-list" *ngIf="!allProjects?.length">
+                    <div class="ax-table-list__row">
+                        <div class="row">
+                            <div class="columns small-12">There are no projects to display for selected filter.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

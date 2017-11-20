@@ -1,0 +1,74 @@
+<div class="content content--with-padding-top system-settings">
+    <div class="ax-container">
+        <div class="row white-box white-box--with-ico">
+            <div class="columns small-12 large-7">
+                <h6>{{ 'DNS Name' | translate }}</h6>
+                <form role="form" [formGroup]="systemSettingsEditForm" *ngIf="systemSettingsEditForm" (ngSubmit)="saveSystemSettingsConfig(systemSettingsEditForm)">
+                    <div class="ax-form-row">
+                        <input id="dnsname" type="text" class="ax-field" formControlName="dnsname" autocomplete="off" ax-label-placeholder>
+                        <label for="dnsname" class="ax-label-placeholder">{{ 'DNS name' | translate }}</label>
+                        <div class="ax-form-row__error-msg" *ngIf="!systemSettingsEditForm.controls['dnsname'].valid && (systemSettingsEditForm.controls['dnsname'].touched || systemSettingsEditSubmitted)">DNS name is required<i class="fa fa-warning"></i></div>
+                    </div>
+                    <div class="ax-form-row margin-top-large">
+                        <button type="submit" axButtonWave class="ax-button ax-button--base">{{ 'Save' | translate }}</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+    <div class="row white-box">
+           <div class="columns small-12 large-7">
+               <h6>Access Settings</h6>
+               <form role="form" [formGroup]="accessSettingsForm" *ngIf="accessSettingsForm" (ngSubmit)="saveAccessSettings()">
+                   <div formArrayName="trustedCidrs">
+                       <div class="ax-form-row">
+                           <label>Trust CIDRs</label>
+                           <div *ngFor="let cidr of accessSettingsForm.controls.trustedCidrs.controls; let i=index" class="ax-form-row row system-settings__cidr">
+                               <div class="columns small-12">
+                                   <input class="ax-field" type="text" id="trustedCidrs" required [formControlName]="i">
+                                   <div class="ax-form-row__error-msg" *ngIf="accessSettingsForm.controls.trustedCidrs.controls[i].errors && accessSettingsForm.controls.trustedCidrs.controls[i].dirty">
+                                       Please provide valid CIDR.
+                                   </div>
+                                   <i *ngIf="getCidrCtrls().length > 1" (click)="removeCidr(i)" class="fa fa-times system-settings__remove-cidr-btn clickable" aria-hidden="true"></i>
+                               </div>
+                           </div>
+                       </div>
+                   </div>
+                   <div class="ax-form-row margin-top-large">
+                       <button axButtonWave class="ax-button ax-button--base-o" type="button" (click)="addCidr()">Add CIDR</button>
+                       <button type="submit" axButtonWave class="ax-button ax-button--base">Save</button>
+                   </div>
+               </form>
+           </div>
+       </div>
+
+       <div class="row white-box">
+           <div class="columns small-12 large-7">
+               <h6>Set certificate</h6>
+           </div>
+           <div class="columns small-12 large-7">
+               <form role="form" [formGroup]="certEditForm" *ngIf="certEditForm" (ngSubmit)="saveCert(certEditForm)">
+                   <div class="ax-form-row">
+                       <textarea id="private_key" type="text" class="ax-field" formControlName="private_key"
+                                 autocomplete="off" rows="13" ax-label-placeholder></textarea>
+                       <label for="private_key" class="ax-label-placeholder">{{ 'Private key' | translate }}</label>
+                       <div class="ax-form-row__error-msg" *ngIf="!certEditForm.controls['private_key'].valid && (certEditForm.controls['private_key'].touched || certEditSubmitted)">Private key is required<i class="fa fa-warning"></i></div>
+                   </div>
+
+                   <div class="ax-form-row">
+                       <textarea id="public_cert" type="text" class="ax-field" formControlName="public_cert"
+                                 autocomplete="off" rows="13" ax-label-placeholder></textarea>
+                       <label for="public_cert" class="ax-label-placeholder">{{ 'Public Certificate' | translate }}</label>
+                       <div class="ax-form-row__error-msg" *ngIf="!certEditForm.controls['public_cert'].valid && (certEditForm.controls['public_cert'].touched || certEditSubmitted)">Public cert is required<i class="fa fa-warning"></i></div>
+                   </div>
+                   <div class="ax-form-row margin-top-large">
+                       <button type="submit" axButtonWave class="ax-button ax-button--base">{{ isEdit ? 'Update': 'Create' | translate }}</button>
+                       <button axButtonWave class="ax-button ax-button--base" (click)="deleteCert(certEditForm)">{{ 'Delete' | translate }}</button>
+                   </div>
+               </form>
+           </div>
+       </div>
+
+       <ax-spot-instances-panel></ax-spot-instances-panel>
+    </div>
+</div>

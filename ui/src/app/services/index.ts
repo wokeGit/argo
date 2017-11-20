@@ -12,3 +12,6 @@ export { TrackingService } from './tracking.service';
 export { UsersService } from './users.service';
 export { SystemService } from './system.service';
 // export { } from './';
+
+export * from './services.module';
+export * from './workflows.service';
