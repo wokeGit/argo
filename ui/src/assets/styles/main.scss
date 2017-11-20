@@ -1,6 +1,6 @@
-@import 'node_modules/owl.carousel/dist/assets/owl.carousel';
-@import 'node_modules/nvd3/build/nv.d3.min';
-@import 'node_modules/font-awesome-animation/dist/font-awesome-animation.min';
+//@import 'node_modules/owl.carousel/dist/assets/owl.carousel';
+//@import 'node_modules/nvd3/build/nv.d3.min';
+//@import 'node_modules/font-awesome-animation/dist/font-awesome-animation.min';
 //@import 'node_modules/argo-ui-lib/src/assets/styles/gui-lib';
 
 @import './config';
@@ -11,12 +11,27 @@
 @import './table';
 @import './dropdown';
 @import './typography';
+@import './ax-icons-auto';
+@import './ax-icons';
 
-@import './elements/*.scss';
+@import './elements/ax-label';
+@import './elements/bottom-toolbox';
+@import './elements/button-label';
+@import './elements/fixture-status';
+@import './elements/global-search';
+@import './elements/jira-issue';
+@import './elements/labels-horizontal-list';
+@import './elements/no-data-panel';
+@import './elements/shaded-box';
+@import './elements/steps';
+@import './elements/stream';
+@import './elements/toolbar';
+@import './elements/total-jobs-box';
+@import './elements/wave-loader';
 
 // Directives style
-@import '../../app/common/highlight-substring/highlight-substring';
-@import '../../app/common/status-icon/status-icon';
+//@import '../../app/common/highlight-substring/highlight-substring';
+//@import '../../app/common/status-icon/status-icon';
 
 .initial-loading {
     text-align: center;

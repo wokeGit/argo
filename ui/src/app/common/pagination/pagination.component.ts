@@ -6,7 +6,7 @@ import { Pagination } from './pagination';
 @Component({
     selector: 'ax-pagination',
     templateUrl: './pagination.html',
-    styles: [ './pagination.scss' ],
+    styleUrls: [ './pagination.scss' ],
 })
 export class PaginationComponent {
     @Input()

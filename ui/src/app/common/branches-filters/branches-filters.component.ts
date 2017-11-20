@@ -3,12 +3,13 @@ import { Component, OnInit, Input } from '@angular/core';
 
 import { RepoService, BranchService } from '../../services';
 import { Branch } from '../../model';
-import { SortOperations } from '../../common';
+import { SortOperations } from '../';
+import { ViewUtils } from '../view-utils';
 
 @Component({
     selector: 'ax-branches-filters',
     templateUrl: './branches-filters.html',
-    styles: [ './branches-filters.scss' ],
+    styleUrls: [ './branches-filters.scss' ],
 })
 export class BranchesFiltersComponent implements OnInit {
 
@@ -24,25 +25,17 @@ export class BranchesFiltersComponent implements OnInit {
     selectedRepoName: string = '';
     searchString: string = '';
 
-    public static parseRepoUrl(repo: string): { name: string, url: string } {
-        let repoSplit = repo.split('/');
-        return {
-            name: repoSplit[repoSplit.length - 1],
-            url: repo
-        };
-    }
-
-    public static formatSelection(selectedRepo: string, selectedBranch: string, pageName: string = 'branches'): string {
-        if (!selectedRepo && !selectedBranch) {
-            return `All ${pageName}`;
-        } else if (!selectedBranch) {
-            let repoInfo = BranchesFiltersComponent.parseRepoUrl(selectedRepo);
-            return `All ${pageName} of ${repoInfo.name}`;
-        } else {
-            let repoInfo = BranchesFiltersComponent.parseRepoUrl(selectedRepo);
-            return `.../${repoInfo.name}/${selectedBranch}`;
-        }
-    }
+    // public static formatSelection(selectedRepo: string, selectedBranch: string, pageName: string = 'branches'): string {
+    //     if (!selectedRepo && !selectedBranch) {
+    //         return `All ${pageName}`;
+    //     } else if (!selectedBranch) {
+    //         let repoInfo = ViewUtils.parseRepoUrl(selectedRepo);
+    //         return `All ${pageName} of ${repoInfo.name}`;
+    //     } else {
+    //         let repoInfo = ViewUtils.parseRepoUrl(selectedRepo);
+    //         return `.../${repoInfo.name}/${selectedBranch}`;
+    //     }
+    // }
 
     constructor(private repoService: RepoService, private branchService: BranchService) {}
 
@@ -74,7 +67,7 @@ export class BranchesFiltersComponent implements OnInit {
     ngOnInit() {
         this.repoService.getReposAsync(true).subscribe(
             success => {
-                this.allRepositories = _.map(success.data, (repo: string) => BranchesFiltersComponent.parseRepoUrl(repo)).sort((a, b) => {
+                this.allRepositories = _.map(success.data, (repo: string) => ViewUtils.parseRepoUrl(repo)).sort((a, b) => {
                     if (a.name.toLowerCase() < b.name.toLowerCase()) {
                         return -1;
                     }

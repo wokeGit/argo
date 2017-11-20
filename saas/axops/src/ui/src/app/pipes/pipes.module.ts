@@ -1,7 +1,5 @@
 import { NgModule } from '@angular/core';
 
-import { TranslateModule } from 'ng2-translate/ng2-translate';
-
 import { AccountStatePipe } from './accountState.pipe';
 import { BytesToGbPipe } from './bytesToGb.pipe';
 import { CapitalizePipe } from './capitalize.pipe';
@@ -78,7 +76,7 @@ let pipes: any[] = [
 
 @NgModule({
     declarations: pipes,
-    exports: pipes.concat(TranslateModule)
+    exports: pipes
 })
 export class PipesModule {
 }

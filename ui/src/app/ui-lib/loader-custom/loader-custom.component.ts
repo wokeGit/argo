@@ -3,7 +3,7 @@ import {Component, Input} from '@angular/core';
 @Component({
     selector: 'ax-loader-custom',
     templateUrl: './loader-custom.html',
-    styles: [ './loader-custom.scss' ],
+    styleUrls: [ './loader-custom.scss' ],
 })
 
 export class LoaderCustomComponent {

@@ -10,6 +10,28 @@ import {
 import { SlidingPanelService } from './sliding-panel/sliding-panel.service';
 import { SwipeCheckboxComponent } from './swipe-checkbox/swipe-checkbox.component';
 import { LoaderCustomComponent } from './loader-custom/loader-custom.component';
+import { DateRangeDropDownComponent } from './date-range-dropdown/date-range-dropdown.component';
+import { DateRangeSelectorComponent } from './date-range-selector/date-range-selector.component';
+import { ButtonWaveDirective } from './directives/button-wave/button-wave.directive';
+import { InfiniteScrollDirective } from './directives/infinite-scroll/infinite-scroll.directive';
+import { LabelPlaceholderDirective } from './directives/label-as-placeholder/label-placeholder.directive';
+import { LabelPlaceholderReactiveDirective } from './directives/label-as-placeholder/label-placeholder-reactive.directive';
+import { DropdownAnchorDirective, DropDownComponent, DropdownContentDirective } from './dropdown/dropdown.component';
+import { DropDownMenuComponent } from './dropdown-menu/dropdown-menu.component';
+import { FilterMultiSelectComponent } from './filter-multi-select/filter-multi-select.component';
+import { MultiSelectComponent } from './multi-select/multi-select.component';
+import { NavigationPanelComponent } from './navigation-panel/navigation-panel.component';
+import { SelectFilterPipe } from './pipes/select-filter.pipe';
+import { PopupComponent } from './popup/popup.component';
+import { PopupConfirmationComponent } from './popup/popup-confirmation.component';
+import { RadioboxComponent } from './radiobox/radiobox.component';
+import { SelectComponent } from './select/select.component';
+import { SwitchComponent } from './switch/switch.component';
+import { TabsComponent } from './tabs/tabs.component';
+import { TabComponent } from './tabs/tab.component';
+import { TooltipContentComponent } from './tooltip/tooltip-content.component';
+import { TooltipDirective } from './tooltip/tooltip.directive';
+import { CheckboxComponent } from './checkbox/checkbox.component';
 
 let components = [
     SlidingPanelComponent,
@@ -17,7 +39,31 @@ let components = [
     SlidingPanelBodyDirective,
     SlidingPanelFooterDirective,
     SwipeCheckboxComponent,
-    LoaderCustomComponent
+    LoaderCustomComponent,
+    DateRangeDropDownComponent,
+    DateRangeSelectorComponent,
+    ButtonWaveDirective,
+    InfiniteScrollDirective,
+    LabelPlaceholderDirective,
+    LabelPlaceholderReactiveDirective,
+    DropDownComponent,
+    DropDownMenuComponent,
+    DropdownAnchorDirective,
+    DropdownContentDirective,
+    FilterMultiSelectComponent,
+    MultiSelectComponent,
+    NavigationPanelComponent,
+    SelectFilterPipe,
+    PopupComponent,
+    PopupConfirmationComponent,
+    RadioboxComponent,
+    SelectComponent,
+    SwitchComponent,
+    TabComponent,
+    TabsComponent,
+    TooltipContentComponent,
+    TooltipDirective,
+    CheckboxComponent
 ];
 
 @NgModule({

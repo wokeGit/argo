@@ -5,10 +5,7 @@ import { RouterModule } from '@angular/router';
 
 import { GuiComponentsModule } from '../ui-lib/components.module';
 
-import { GlobalSearchInputComponent } from './global-search-input/global-search-input.component';
-
 let components: any[] = [
-    // GlobalSearchInputComponent,
 ];
 
 @NgModule({

@@ -98,7 +98,7 @@ interface SearchTerm {
 @Component({
     selector: 'ax-global-search-input',
     templateUrl: './global-search-input.html',
-    styles: ['./global-search-input.scss'],
+    styleUrls: ['./global-search-input.scss'],
 })
 export class GlobalSearchInputComponent implements OnInit, OnChanges, OnDestroy {
     @Input()

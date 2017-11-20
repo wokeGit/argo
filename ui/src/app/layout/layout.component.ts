@@ -54,7 +54,7 @@ export interface HasLayoutSettings {
 @Component({
     selector: 'app-layout',
     templateUrl: './layout.html',
-    styles: [ './layout.scss' ],
+    styleUrls: [ './layout.scss' ],
 })
 export class LayoutComponent {
     @ViewChild(RouterOutlet)

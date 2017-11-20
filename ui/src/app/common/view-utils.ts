@@ -1,5 +1,4 @@
 import { ViewPreferences } from '../model';
-import { BranchesFiltersComponent } from './branches-filters/branches-filters.component';
 
 export const ViewUtils = {
     scrollParent(el) {
@@ -70,7 +69,7 @@ export const ViewUtils = {
 
         if (repo) {
             breadcrumb.push({
-                title: BranchesFiltersComponent.parseRepoUrl(repo).name,
+                title: this.parseRepoUrl(repo).name,
                 routerLink: ( branch || rootLink ) ? [rootUrl, Object.assign({}, rootUrlParams, { repo, branch: '' })] : null
             });
         }
@@ -95,5 +94,25 @@ export const ViewUtils = {
         let selectedRepo = params.hasOwnProperty('repo') ? decodeURIComponent(params['repo']) : viewPreferences.filterState.selectedRepo;
         let selectedBranch = params.hasOwnProperty('branch') ? decodeURIComponent(params['branch']) : viewPreferences.filterState.selectedBranch;
         return [selectedRepo, selectedBranch];
+    },
+
+    parseRepoUrl(repo: string): { name: string, url: string } {
+        let repoSplit = repo.split('/');
+        return {
+            name: repoSplit[repoSplit.length - 1],
+            url: repo
+        };
+    },
+
+    formatSelection(selectedRepo: string, selectedBranch: string, pageName: string = 'branches'): string {
+        if (!selectedRepo && !selectedBranch) {
+            return `All ${pageName}`;
+        } else if (!selectedBranch) {
+            let repoInfo = ViewUtils.parseRepoUrl(selectedRepo);
+            return `All ${pageName} of ${repoInfo.name}`;
+        } else {
+            let repoInfo = ViewUtils.parseRepoUrl(selectedRepo);
+            return `.../${repoInfo.name}/${selectedBranch}`;
+        }
     }
 };

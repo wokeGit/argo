@@ -65,9 +65,9 @@ $sliding-panel-middle-width: 600px;
         background-color: #fff;
         transition: right .5s;
 
-        @include breakpoint(medium down) {
-            width: 90%;
-        }
+        //@include breakpoint(medium down) {
+        //    width: 90%;
+        //}
 
         .sliding-panel--is-narrow & {
             width: $sliding-panel-narrow-width;

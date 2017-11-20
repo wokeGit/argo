@@ -6,7 +6,7 @@ import { SlidingPanelService } from './sliding-panel.service';
 @Component({
     selector: 'ax-sliding-panel',
     templateUrl: './sliding-panel.html',
-    styles: [ './_sliding-panel.scss' ],
+    styleUrls: [ './_sliding-panel.scss' ],
 })
 export class SlidingPanelComponent implements AfterContentInit, OnDestroy {
 

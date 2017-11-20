@@ -28,7 +28,7 @@ export const CUSTOM_CHECKBOX_CONTROL_VALUE_ACCESSOR: any = {
 @Component({
     selector: 'ax-swipe-checkbox',
     templateUrl: './swipe-checkbox.html',
-    styles: [ './_swipe-checkbox.scss' ],
+    styleUrls: [ './_swipe-checkbox.scss' ],
     providers: [
         CUSTOM_CHECKBOX_CONTROL_VALUE_ACCESSOR,
     ],

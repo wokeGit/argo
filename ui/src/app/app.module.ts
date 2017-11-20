@@ -13,15 +13,9 @@ import { LayoutModule } from './layout/layout.module';
 import { ComponentsModule } from './common/components.module';
 
 import { AppComponent } from './app.component';
-import { ViewPreferencesService } from './services/view-preferences.service';
-import { AuthenticationService } from './services/authentication.service';
-import { CookieService } from './services/cookie.service';
-import { UsersService } from './services/users.service';
-import { TrackingService } from './services/tracking.service';
-import { SystemService } from './services/system.service';
-import { BranchService } from './services/branch.service';
-import { RepoService } from './services/repo.service';
-import { ToolService } from './services/tool.service';
+
+import { ServicesModule } from './services/services.module';
+import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
   declarations: [
@@ -32,19 +26,11 @@ import { ToolService } from './services/tool.service';
     AppRoutingModule,
     LayoutModule,
     ComponentsModule,
+    ServicesModule,
+    HttpClientModule,
     HttpModule
   ],
-  providers: [
-    ViewPreferencesService,
-    AuthenticationService,
-    CookieService,
-    UsersService,
-    TrackingService,
-    SystemService,
-    BranchService,
-    RepoService,
-    ToolService
-  ],
+  providers: [],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
