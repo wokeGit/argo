@@ -9,7 +9,7 @@ import { Subject, Subscription, Observable } from 'rxjs';
 // import { Task, Application } from '../../model';
 
 @Component({
-    selector: 'app-ax-layout',
+    selector: 'ax-layout',
     templateUrl: './layout.html',
     styleUrls: [ './layout.scss' ],
 })
