@@ -6,32 +6,26 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { LayoutComponent } from './layout.component';
 import { NavigationComponent } from './navigation/navigation.component';
 import { TopBarComponent } from './top-bar/top-bar.component';
-// import { TutorialComponent } from './tutorial/tutorial.component';
-// import { PlaygroundInfoComponent } from './playground-info/playground-info.component';
-// import { NotificationsCenterModule } from './notifications-center/notifications-center.module';
-// import { ToolbarComponent } from './toolbar/toolbar.component';
-//
-// import { PipesModule } from '../../pipes';
-// import { ComponentsModule } from '../../common';
+import { ToolbarComponent } from './toolbar/toolbar.component';
+import { AppRoutingModule } from '../app-routing.module';
 
 @NgModule({
-    declarations: [
-        LayoutComponent,
-        TopBarComponent,
-        NavigationComponent,
-        // TutorialComponent,
-        // PlaygroundInfoComponent,
-        // ToolbarComponent,
-    ],
-    imports: [
-        // PipesModule,
-        // ComponentsModule,
-        CommonModule,
-        RouterModule,
-        FormsModule,
-        ReactiveFormsModule,
-        // NotificationsCenterModule,
-    ],
+  declarations: [
+    LayoutComponent,
+    TopBarComponent,
+    NavigationComponent,
+    ToolbarComponent,
+  ],
+  imports: [
+    CommonModule,
+    RouterModule,
+    FormsModule,
+    ReactiveFormsModule,
+    AppRoutingModule,
+  ],
+  exports: [
+    LayoutComponent
+  ]
 })
 export class LayoutModule {
 
