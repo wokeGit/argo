@@ -12,7 +12,8 @@
 @import './dropdown';
 @import './typography';
 
-@import './elements/*.scss';
+//@import './elements/*.scss';
+@import '/elements/bottom-toolbox';
 
 // Directives style
 @import '../../app/common/highlight-substring/highlight-substring';

@@ -16,8 +16,9 @@
         </div>
     </div>
 
-    <div class="ax-table-list__row jobs-list__item" *ngFor="let workflow of workflows;">
-        <!--<div class="row" *ngIf="dataLoaded">-->
+    <div class="ax-table-list__row jobs-list__item" *ngFor="let workflow of workflowList;">
+      {{ workflow | json }}
+        <!--<div class="row">-->
             <!--<div class="columns small-2" ax-tooltip="{{ task.name }}">-->
                 <!--<div class="ax-checkbox">-->
                     <!--<input type="checkbox" id="isSelected" (change)="bulkUpdater.toggleItemSelection(task); $event.stopPropagation();" [checked]="bulkUpdater.isSelected(task)" [disabled]="task.disabled"><span><i class="fa fa-check"></i></span>-->
@@ -49,8 +50,8 @@
     <div class="bottom-toolbox__wrapper">
         <div class="ax-container ax-container--full-width">
             <!--<h3><em>{{ bulkUpdater.selectedCount }}</em> Job{{selectedTasksCount > 1 ? 's' : ''}} selected</h3>-->
-            <!--<button axButtonWave class="ax-button ax-button&#45;&#45;base-o" (click)="bulkUpdater.execute('cancel')" [disabled]="bulkUpdater.noApplicableSelected('cancel')">Cancel</button>-->
-            <!--<button axButtonWave class="ax-button ax-button&#45;&#45;base-o" (click)="bulkUpdater.execute('resubmit')" [disabled]="bulkUpdater.noApplicableSelected('resubmit')">Resubmit</button>-->
+            <button axButtonWave class="ax-button ax-button--base-o" (click)="bulkUpdater.execute('cancel')" [disabled]="bulkUpdater.noApplicableSelected('cancel')">Cancel</button>
+            <button axButtonWave class="ax-button ax-button--base-o" (click)="bulkUpdater.execute('resubmit')" [disabled]="bulkUpdater.noApplicableSelected('resubmit')">Resubmit</button>
 
             <!--<div class="jobs-list__pagination-position">-->
                 <!--<ax-pagination [pagination]="pagination" [preventActions]="dataLoaded" (onPaginationChange)="onPaginationChange($event)"></ax-pagination>-->

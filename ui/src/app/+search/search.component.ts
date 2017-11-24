@@ -77,7 +77,7 @@ export class SearchComponent implements OnInit {
     //     this.filters = globalSearchFilters;
     //     this.navigate(this.searchString);
     // }
-    //
+
     // private getRouteParams(updatedParams?) {
     //     let params = {};
     //     if (this.category) {
@@ -96,8 +96,8 @@ export class SearchComponent implements OnInit {
     // }
     //
     // private navigate(searchString): void {
-    //     searchString ? this.router.navigate(['/app/search/', this.searchString, this.getRouteParams()]) :
-    //         this.router.navigate(['/app/search/', this.getRouteParams()]);
+    //     searchString ? this.router.navigate(['/search/', searchString, this.getRouteParams()]) :
+    //         this.router.navigate(['/search/', this.getRouteParams()]);
     // }
     //
     // private checkIfAnyFilterSelected(category: string) {
