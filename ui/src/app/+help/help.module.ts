@@ -5,6 +5,7 @@ import { BaseModule } from '../common';
 
 import { HelpRoutingModule } from './help-routing.module';
 import { HelpComponent } from './help.component';
+
 @NgModule({
   imports: [
     CommonModule,
@@ -15,4 +16,5 @@ import { HelpComponent } from './help.component';
     HelpComponent
   ]
 })
-export class HelpModule { }
+export class HelpModule {
+}

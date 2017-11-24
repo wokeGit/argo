@@ -3,6 +3,19 @@
     <!--<ax-global-search-input *ngIf="settings.globalSearch | async"-->
     <!--[settings]="settings.globalSearch | async">-->
     <!--</ax-global-search-input>-->
+    <div class="global-search__container global-search__container--closed">
+      <form [formGroup]="searchForm" (ngSubmit)="onSubmit(searchForm)">
+        <input class="global-search__input"
+               type="text"
+               name="inputControl"
+               autocomplete="off"
+               formControlName="inputControl"
+               (click)="onInputClick()"/>
+      </form>
+      <div class="global-search__icon">
+        <i class="ax-icon-search" aria-hidden="true"></i>
+      </div>
+    </div>
   </div>
   <div class="row">
     <div class="columns small-9 ax-top-bar__left-side">
