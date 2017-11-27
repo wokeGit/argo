@@ -1,7 +1,8 @@
 import { Component, Input, OnInit, OnChanges, OnDestroy } from '@angular/core';
+import { Router } from '@angular/router';
 
 import * as models from '../../models';
-import { WorkflowsService } from '../../services/workflows.service';
+import { WorkflowsService, ModalService } from '../../services/';
 
 @Component({
   selector: 'ax-workflows-list',
@@ -21,17 +22,19 @@ export class WorkflowsListComponent implements OnInit {
   //
   // public limit: number = 10;
   // public params: JobsFilters;
-  // public dataLoaded: boolean = false;
+  public dataLoaded: boolean = false;
   // public pagination: Pagination = {
   //     limit: this.limit,
   //     offset: 0,
   //     listLength: this.tasks.length
   // };
-  public workflowList: any; // models.WorkflowList;
+  public workflowList: any[]; // models.WorkflowList;
   // private subscriptions: Subscription[] = [];
   // private getTasksSubscrioption: Subscription;
   //
-  constructor(private workflowsService: WorkflowsService) {
+  constructor(private workflowsService: WorkflowsService,
+              private modalService: ModalService,
+              private router: Router) {
   }
 
   public async ngOnInit() {
@@ -40,8 +43,11 @@ export class WorkflowsListComponent implements OnInit {
   }
 
   private async getWorkflows() {
+    this.dataLoaded = false;
     let items = await this.workflowsService.getWorkflows();
-    return items['items'];
+    this.dataLoaded = true;
+
+    return items['items'].map(workflow =>  Object.assign(workflow, { checked: false }));
   }
 
   // constructor(private taskService: TaskService,
@@ -104,11 +110,45 @@ export class WorkflowsListComponent implements OnInit {
   //     // unselect all
   //     this.bulkUpdater.clearSelection();
   // }
-  //
-  // public navigateToDetails(id: string): void {
-  //     this.globalSearchService.navigate(['/app/timeline/jobs/', id]);
-  // }
-  //
+
+  public navigateToDetails(id: string): void {
+      this.router.navigate(['/timeline/', id]);
+  }
+
+  public selectWorkflow(workflow) {
+    console.log('seelct workflow', workflow);
+  }
+
+  public toggleAllSelection() {
+
+  }
+
+  public isSelected(workflow) {
+    return this.workflowList.indexOf(workflow) > -1;
+  }
+
+  public get isAllSelected(): boolean {
+    console.log('asd', this.workflowList && this.workflowList.length > 0 && !this.workflowList.filter(workflow => workflow.selected !== false ).length);
+    return this.workflowList && this.workflowList.length > 0 && !this.workflowList.filter(workflow => workflow.selected !== false ).length;
+  }
+
+  public get selectedCount(): number {
+    return (this.workflowList && this.workflowList.length > 0) ? this.workflowList.filter(workflow => workflow.selected === true ).length : 0;
+  }
+
+  public execute(qwe) {
+    console.log('qwe', qwe);
+    this.modalService.showModal('qwe', 'message').subscribe(confirmed => {
+      if (confirmed) {
+        console.log('fghf', confirmed);
+      }
+    });
+  }
+
+  public noApplicableSelected(asd) {
+    console.log('asd', asd);
+  }
+
   // private isActiveTask(task: Task) {
   //     return task.status !== TaskStatus.Cancelled && task.status !== TaskStatus.Success && task.status !== TaskStatus.Failed ? 1 : 0;
   // }

@@ -5,7 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { SearchComponent } from './search.component';
 import { SearchRoutingModule } from './search-routing.module';
 import { WorkflowsListComponent } from './workflows-list/workflows-list.component';
-import { ServicesModule } from '../services/services.module';
+import { BaseModule } from '../common/base.module';
 
 export const routes = [
   {path: '', component: SearchComponent, terminal: true},
@@ -18,10 +18,10 @@ export const routes = [
     WorkflowsListComponent
   ],
   imports: [
+    BaseModule,
     CommonModule,
     FormsModule,
     SearchRoutingModule,
-    ServicesModule
   ]
 })
 export class SearchModule {
