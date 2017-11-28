@@ -3,7 +3,7 @@
         <div class="row">
             <div class="columns small-2">
                 <div class="ax-checkbox">
-                    <input type="checkbox" (change)="toggleAllSelection()" [checked]="isAllSelected" [disabled]="!dataLoaded">
+                    <input type="checkbox" (change)="bulkUpdater.toggleAllSelection()" [checked]="bulkUpdater.isAllSelected" [disabled]="!dataLoaded">
                     <span><i class="fa fa-check"></i></span>
                 </div>
                 Job Name
@@ -16,11 +16,11 @@
         </div>
     </div>
 
-    <div class="ax-table-list__row jobs-list__item" *ngFor="let workflow of workflowList;">
+    <div class="ax-table-list__row jobs-list__item" *ngFor="let workflow of workflowListItems;">
         <div class="row">
             <div class="columns small-2">
                 <div class="ax-checkbox">
-                    <input type="checkbox" id="isSelected" (change)="selectWorkflow(workflow); $event.stopPropagation();" [checked]="workflow.checked" [disabled]="qwe"><span><i class="fa fa-check"></i></span>
+                    <input type="checkbox" id="isSelected" (change)="bulkUpdater.toggleItemSelection(workflow); $event.stopPropagation();" [checked]="bulkUpdater.isSelected(workflow)" [disabled]="workflow.disabled"><span><i class="fa fa-check"></i></span>
                 </div>
                 <i class="ax-icon-job" aria-hidden="true"></i> <span (click)="navigateToDetails(workflow.metadata.name)"> {{ workflow.metadata.name }} </span>
             </div>
@@ -35,7 +35,7 @@
         </div>
     </div>
 
-    <div *ngIf="dataLoaded && workflowList && !workflowList.length" class="ax-table__empty-row">
+    <div *ngIf="dataLoaded && workflowListItems && !workflowListItems.length" class="ax-table__empty-row">
         <strong><i class="fa fa-info-circle"></i> {{ 'No data to display' }}</strong>
     </div>
 
@@ -48,9 +48,9 @@
 <div class="bottom-toolbox bottom-toolbox--small">
     <div class="bottom-toolbox__wrapper">
         <div class="ax-container ax-container--full-width">
-            <h3><em>{{ selectedCount }}</em> Job{{selectedTasksCount > 1 ? 's' : ''}} selected</h3>
-            <button axButtonWave class="ax-button ax-button--base-o" (click)="execute('cancel')" [disabled]="noApplicableSelected('cancel')">Cancel</button>
-            <button axButtonWave class="ax-button ax-button--base-o" (click)="execute('resubmit')" [disabled]="noApplicableSelected('resubmit')">Resubmit</button>
+            <h3><em>{{ bulkUpdater.selectedCount }}</em> Job{{selectedTasksCount > 1 ? 's' : ''}} selected</h3>
+            <button axButtonWave class="ax-button ax-button--base-o" (click)="bulkUpdater.execute('cancel')" [disabled]="bulkUpdater.noApplicableSelected('cancel')">Cancel</button>
+            <button axButtonWave class="ax-button ax-button--base-o" (click)="bulkUpdater.execute('resubmit')" [disabled]="bulkUpdater.noApplicableSelected('resubmit')">Resubmit</button>
 
             <!--<div class="jobs-list__pagination-position">-->
                 <!--<ax-pagination [pagination]="pagination" [preventActions]="dataLoaded" (onPaginationChange)="onPaginationChange($event)"></ax-pagination>-->

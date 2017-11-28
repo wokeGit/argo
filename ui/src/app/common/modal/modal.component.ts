@@ -1,6 +1,6 @@
 import { Component, ViewContainerRef, ComponentFactoryResolver, ComponentRef } from '@angular/core';
 import { ModalTemplateComponent } from './modal.template';
-import { ModalService } from '../../services/modal.service';
+import { EventsService } from '../../services/events.service';
 
 @Component({
   selector: 'ax-modal',
@@ -10,10 +10,10 @@ import { ModalService } from '../../services/modal.service';
 export class ModalComponent {
   private componentRef: ComponentRef<ModalTemplateComponent>;
 
-  constructor(private modalService: ModalService,
+  constructor(private eventsService: EventsService,
               private viewContainerRef: ViewContainerRef,
               private factory: ComponentFactoryResolver) {
-    modalService.modal.subscribe(stream => {
+    eventsService.modal.subscribe(stream => {
       stream.subscribe(() => {
         this.componentRef.destroy();
         this.componentRef = null;

@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { Route, Router } from '@angular/router';
+import { Router } from '@angular/router';
+import { EventsService } from '../../services/events.service';
 
 @Component({
   selector: 'ax-top-bar',
@@ -9,25 +10,23 @@ import { Route, Router } from '@angular/router';
 })
 export class TopBarComponent implements OnInit {
 
-  public isGlobalSearchVisible: boolean;
   public pageTitle = 'Timeline';
   public searchForm: FormGroup;
 
-  constructor(private router: Router) {
+  constructor(private router: Router, private eventsService: EventsService) {
   }
 
   public ngOnInit() {
     this.searchForm = new FormGroup({
       inputControl: new FormControl(''),
     });
+
+    this.eventsService.search.subscribe(searchString => {
+      this.searchForm.controls['inputControl'].setValue(searchString);
+    });
   }
 
   public onSubmit(form?) {
-    console.log('onSubmit', this.searchForm.controls);
-    this.router.navigate(['/search/', this.searchForm.controls['inputControl'].value ]);
-  }
-
-  public onInputClick() {
-    console.log('onInputClick');
+    this.router.navigate(['/search/', this.searchForm.controls['inputControl'].value]);
   }
 }

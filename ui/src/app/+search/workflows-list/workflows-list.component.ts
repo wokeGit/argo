@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 
 import * as models from '../../models';
 import { WorkflowsService, ModalService } from '../../services/';
+import { BulkUpdater } from '../bulk-updater';
 
 @Component({
   selector: 'ax-workflows-list',
@@ -17,7 +18,7 @@ export class WorkflowsListComponent implements OnInit {
   @Input()
   public searchInput: string;
 
-  // public bulkUpdater: BulkUpdater<Task>;
+  public bulkUpdater: BulkUpdater<any>;
   // public tasks: Task[] = [];
   //
   // public limit: number = 10;
@@ -28,60 +29,62 @@ export class WorkflowsListComponent implements OnInit {
   //     offset: 0,
   //     listLength: this.tasks.length
   // };
-  public workflowList: any[]; // models.WorkflowList;
+  public workflowListItems: models.Workflow[];
+
   // private subscriptions: Subscription[] = [];
-  // private getTasksSubscrioption: Subscription;
-  //
+
   constructor(private workflowsService: WorkflowsService,
               private modalService: ModalService,
               private router: Router) {
+    this.bulkUpdater = new BulkUpdater<any>(modalService)
+      .addAction('cancel', {
+        title: 'Cancel Jobs',
+        confirmation: count => `Are you sure you want to cancel ${count} jobs?`,
+        execute: task => this.qwe(), // this.taskService.cancelTask(task.id).toPromise(),
+        isApplicable: task => this.isActiveTask(task) && task.status !== 'cancelling',
+        warningMessage: tasks => `The ${tasks.length} selected job${tasks.length > 1 ? 's' : ''} are not active and cannot be cancelled.`,
+        postMessage: (successfulCount, failedCount) => `${successfulCount} jobs had been successfully canceled.`
+      }).addAction('resubmit', {
+        title: 'Resubmit Jobs',
+        confirmation: count => `Are you sure you want to resubmit ${count} Job${count > 1 ? 's' : ''}?`,
+        execute: task => this.qwe(), // this.resubmitTask(task.id),
+        isApplicable: task => true,
+        warningMessage: tasks => null,
+        postMessage: (successfulCount, failedCount) => `${successfulCount} jobs had been successfully resubmitted.`
+      });
+    // this.bulkUpdater.actionExecuted.subscribe(action => this.updateTasks(this.params, this.pagination, true));
   }
 
   public async ngOnInit() {
-    this.workflowList = await this.getWorkflows();
-    console.log('this.workflowList', this.workflowList);
+    this.workflowListItems = await this.getWorkflowItems();
   }
 
-  private async getWorkflows() {
+  private async getWorkflowItems() {
     this.dataLoaded = false;
-    let items = await this.workflowsService.getWorkflows();
+    let workflowsList = await this.workflowsService.getWorkflows();
     this.dataLoaded = true;
 
-    return items['items'].map(workflow =>  Object.assign(workflow, { checked: false }));
+    return workflowsList['items'].map(workflow => Object.assign(workflow, {checked: false, disabled: false}));
   }
 
-  // constructor(private taskService: TaskService,
-  //             private globalSearchService: GlobalSearchService,
-  //             modalService: ModalService,
-  //             notificationsService: NotificationsService) {
-  //     this.bulkUpdater = new BulkUpdater<Task>(modalService, notificationsService)
-  //         .addAction('cancel', {
-  //             title: 'Cancel Jobs',
-  //             confirmation: count => `Are you sure you want to cancel ${count} jobs?`,
-  //             execute: task => this.taskService.cancelTask(task.id).toPromise(),
-  //             isApplicable: task => this.isActiveTask(task) && task.status !== TaskStatus.Canceling,
-  //             warningMessage: tasks => `The ${tasks.length} selected job${tasks.length > 1 ? 's' : ''} are not active and cannot be cancelled.`,
-  //             postMessage: (successfulCount, failedCount) => `${successfulCount} jobs had been successfully canceled.`
-  //         }).addAction('resubmit', {
-  //             title: 'Resubmit Jobs',
-  //             confirmation: count => `Are you sure you want to resubmit ${count} Job${count > 1 ? 's' : ''}?`,
-  //             execute: task => this.resubmitTask(task.id),
-  //             isApplicable: task => true,
-  //             warningMessage: tasks => null,
-  //             postMessage: (successfulCount, failedCount) => `${successfulCount} jobs had been successfully resubmitted.`
-  //         });
-  //         this.bulkUpdater.actionExecuted.subscribe(action => this.updateTasks(this.params, this.pagination, true));
-  // }
-  //
-  // private resubmitTask(taskId: string): Promise<any> {
-  //     return this.taskService.getTask(taskId).toPromise().then(task => {
-  //         return this.taskService.launchTask({
-  //             arguments: task.arguments,
-  //             template_id: task.template_id,
-  //         }).toPromise();
-  //     });
-  // }
-  //
+  private qwe() {
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        resolve('Success!');
+      }, 250);
+    });
+  }
+
+  private resubmitTask(taskId: string): Promise<any> {
+    // return this.taskService.getTask(taskId).toPromise().then(task => {
+    //   return this.taskService.launchTask({
+    //     arguments: task.arguments,
+    //     template_id: task.template_id,
+    //   }).toPromise();
+    // });
+    return this.qwe();
+  }
+
   // public ngOnChanges() {
   //     // need to map readable statuses string representation to numbers
   //     this.params = {
@@ -96,62 +99,16 @@ export class WorkflowsListComponent implements OnInit {
   //     this.pagination = {limit: this.limit, offset: 0, listLength: this.tasks.length};
   //     this.updateTasks(this.params, this.pagination, true);
   // }
-  //
-  // public ngOnDestroy() {
-  //     this.subscriptions.forEach(subscription => subscription.unsubscribe());
-  //     this.subscriptions = [];
-  //     this.unsubscribeGetTaskSubscription();
-  // }
-  //
-  // public onPaginationChange(pagination: Pagination) {
-  //     this.limit = pagination.limit;
-  //     this.updateTasks(this.params, {offset: pagination.offset, limit: pagination.limit}, true);
-  //
-  //     // unselect all
-  //     this.bulkUpdater.clearSelection();
-  // }
 
   public navigateToDetails(id: string): void {
-      this.router.navigate(['/timeline/', id]);
+    this.router.navigate(['/timeline/', id]);
   }
 
-  public selectWorkflow(workflow) {
-    console.log('seelct workflow', workflow);
+  private isActiveTask(task: any) {
+    return true;
+    // return task.status !== TaskStatus.Cancelled && task.status !== TaskStatus.Success && task.status !== TaskStatus.Failed ? 1 : 0;
   }
 
-  public toggleAllSelection() {
-
-  }
-
-  public isSelected(workflow) {
-    return this.workflowList.indexOf(workflow) > -1;
-  }
-
-  public get isAllSelected(): boolean {
-    console.log('asd', this.workflowList && this.workflowList.length > 0 && !this.workflowList.filter(workflow => workflow.selected !== false ).length);
-    return this.workflowList && this.workflowList.length > 0 && !this.workflowList.filter(workflow => workflow.selected !== false ).length;
-  }
-
-  public get selectedCount(): number {
-    return (this.workflowList && this.workflowList.length > 0) ? this.workflowList.filter(workflow => workflow.selected === true ).length : 0;
-  }
-
-  public execute(qwe) {
-    console.log('qwe', qwe);
-    this.modalService.showModal('qwe', 'message').subscribe(confirmed => {
-      if (confirmed) {
-        console.log('fghf', confirmed);
-      }
-    });
-  }
-
-  public noApplicableSelected(asd) {
-    console.log('asd', asd);
-  }
-
-  // private isActiveTask(task: Task) {
-  //     return task.status !== TaskStatus.Cancelled && task.status !== TaskStatus.Success && task.status !== TaskStatus.Failed ? 1 : 0;
-  // }
   //
   // private updateTasks(params: JobsFilters, pagination: Pagination, hideLoader?: boolean) {
   //     this.unsubscribeGetTaskSubscription();
@@ -187,14 +144,7 @@ export class WorkflowsListComponent implements OnInit {
   //             this.bulkUpdater.items = this.tasks;
   //         });
   // }
-  //
-  // private unsubscribeGetTaskSubscription() {
-  //     if (this.getTasksSubscrioption) {
-  //         this.getTasksSubscrioption.unsubscribe();
-  //         this.getTasksSubscrioption = null;
-  //     }
-  // }
-  //
+
   // private getTasks(params: JobsFilters, limit: number, offset: number) {
   //     let parameters = {
   //         status: null,

@@ -4,6 +4,7 @@ import { HttpClientModule } from '@angular/common/http';
 
 import { WorkflowsService } from './workflows.service';
 import { ModalService } from './modal.service';
+import { EventsService } from './events.service';
 
 @NgModule({
   imports: [
@@ -14,6 +15,8 @@ import { ModalService } from './modal.service';
   providers: [
     WorkflowsService,
     ModalService,
+    EventsService,
   ]
 })
-export class ServicesModule { }
+export class ServicesModule {
+}

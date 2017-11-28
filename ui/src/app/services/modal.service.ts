@@ -1,12 +1,12 @@
 import { EventEmitter, Inject } from '@angular/core';
+import { EventsService } from './events.service';
 
 
 export class ModalService {
   private modalStream: EventEmitter<any>;
   private modalConfig: Object;
-  public modal: EventEmitter<any> = new EventEmitter();
 
-  constructor() {
+  constructor(@Inject(EventsService) private eventsService: EventsService) {
   }
 
   showModal(title, header, message = '', icon = {name: null, color: null}, okButton?: boolean) {
@@ -22,8 +22,7 @@ export class ModalService {
     }
 
     this.modalStream = new EventEmitter();
-    console.log('showmodal');
-    this.modal.emit(
+    this.eventsService.modal.emit(
       this.modalStream
     );
 
@@ -44,7 +43,7 @@ export class ModalService {
     }
 
     this.modalStream = new EventEmitter();
-    this.modal.emit(
+    this.eventsService.modal.emit(
       this.modalStream
     );
 

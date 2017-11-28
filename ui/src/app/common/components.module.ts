@@ -20,8 +20,10 @@ const components = [
 @NgModule({
   declarations: components,
   exports: components,
+  entryComponents: [ModalTemplateComponent],
   imports: [
     CommonModule
   ]
 })
-export class ComponentsModule {}
+export class ComponentsModule {
+}
