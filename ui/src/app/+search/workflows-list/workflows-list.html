@@ -22,7 +22,7 @@
                 <div class="ax-checkbox">
                     <input type="checkbox" id="isSelected" (change)="bulkUpdater.toggleItemSelection(workflow); $event.stopPropagation();" [checked]="bulkUpdater.isSelected(workflow)" [disabled]="workflow.disabled"><span><i class="fa fa-check"></i></span>
                 </div>
-                <i class="ax-icon-job" aria-hidden="true"></i> <span (click)="navigateToDetails(workflow.metadata.name)"> {{ workflow.metadata.name }} </span>
+                <i class="ax-icon-job" aria-hidden="true"></i> <span [ax-highlight-substring]="searchInput" (click)="navigateToDetails(workflow.metadata.name)"> {{ workflow.metadata.name }} </span>
             </div>
             <!--<div class="columns small-2" ax-tooltip="{{ task.status | status }} on {{ (task.launch_time || task.create_time) | axShortDateTime }}" (click)="navigateToDetails(task.id)">-->
                 <!--<i class="fa" aria-hidden="true" ax-status-icon [status]="task.status"></i>-->

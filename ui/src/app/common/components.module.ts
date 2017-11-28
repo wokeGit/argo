@@ -8,9 +8,11 @@ import { LoaderListMockupComponent } from './loader-list-mockup/loader-list-mock
 import { ModalComponent } from './modal/modal.component';
 import { ModalTemplateComponent } from './modal/modal.template';
 import { ButtonWaveDirective } from './directives/button-wave/button-wave.directive';
+import { HighlightSubstringDirective } from './directives/highlight-substring/highlight-substring.directive';
 
 const components = [
   ButtonWaveDirective,
+  HighlightSubstringDirective,
   DurationPipe,
   TimestampPipe,
   WorkflowStatusPipe,

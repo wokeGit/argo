@@ -1,6 +1,7 @@
 $axFontsDirectorPath: "../../node_modules/ui-lib/src/assets/fonts";
 @import 'node_modules/ui-lib/src/assets/styles/gui-lib';
 @import '../assets/styles/config';
+@import '../app/common/directives/highlight-substring/highlight-substring';
 
 .content-wrapper {
   padding: #{$top-bar-height + $toolbar-height} 0 0 $nav-width;
