@@ -10,6 +10,7 @@ import { ModalComponent } from './modal/modal.component';
 import { ModalTemplateComponent } from './modal/modal.template';
 import { ButtonWaveDirective } from './directives/button-wave/button-wave.directive';
 import { HighlightSubstringDirective } from './directives/highlight-substring/highlight-substring.directive';
+import { StatusIconDirective } from './status-icon/status-icon.directive';
 import { WorkflowTreeComponent } from './workflow-tree/workflow-tree.component';
 import { WorkflowSubtreeComponent } from './workflow-tree/workflow-subtree.component';
 import { WorkflowTreeNodeComponent } from './workflow-tree/workflow-tree-node.component';
@@ -20,6 +21,7 @@ const components = [
   DurationPipe,
   TimestampPipe,
   WorkflowStatusPipe,
+  StatusIconDirective,
   ShortTimePipe,
   LoaderListMockupComponent,
   ModalComponent,
@@ -37,5 +39,4 @@ const components = [
     CommonModule
   ]
 })
-export class ComponentsModule {
-}
+export class ComponentsModule {}
