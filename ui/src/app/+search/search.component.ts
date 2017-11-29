@@ -35,10 +35,11 @@ export class SearchComponent implements OnInit {
 
   public ngOnInit() {
     this.route.params.subscribe(params => {
-      console.log('params', params);
+      // console.log('params', params);
       this.searchInput = params['searchInput'];
 
       if (this.searchInput) {
+        console.log('event run', this.searchInput);
         this.eventsService.search.emit(this.searchInput);
       }
       //     this.filters = params['filters'] ? JSON.parse(decodeURIComponent(params['filters'])) : new GlobalSearchFilters();
