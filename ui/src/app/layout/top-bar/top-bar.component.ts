@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { Router } from '@angular/router';
+import { NavigationEnd, Router } from '@angular/router';
 import { EventsService } from '../../services/events.service';
 
 @Component({
@@ -24,6 +24,13 @@ export class TopBarComponent implements OnInit {
     this.eventsService.search.subscribe(searchString => {
       this.searchForm.controls['inputControl'].setValue(searchString);
     });
+
+    this.router.events.subscribe((val) => { // reset search input if change screen from /search to other
+      if (val instanceof NavigationEnd && !this.router.isActive('search', false)) {
+        this.eventsService.search.emit('');
+      }
+    });
+
   }
 
   public onSubmit(form?) {
