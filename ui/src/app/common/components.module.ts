@@ -10,6 +10,7 @@ import { StatusIconDirective } from './status-icon/status-icon.directive';
 import { WorkflowTreeComponent } from './workflow-tree/workflow-tree.component';
 import { WorkflowSubtreeComponent } from './workflow-tree/workflow-subtree.component';
 import { WorkflowTreeNodeComponent } from './workflow-tree/workflow-tree-node.component';
+import { YamlViewerComponent } from './yaml-viewer/yaml-viewer.component';
 
 const components = [
   DurationPipe,
@@ -21,6 +22,7 @@ const components = [
   WorkflowTreeComponent,
   WorkflowSubtreeComponent,
   WorkflowTreeNodeComponent,
+  // YamlViewerComponent,
 ];
 
 @NgModule({
