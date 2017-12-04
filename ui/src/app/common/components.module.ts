@@ -22,7 +22,7 @@ const components = [
   WorkflowTreeComponent,
   WorkflowSubtreeComponent,
   WorkflowTreeNodeComponent,
-  // YamlViewerComponent,
+  YamlViewerComponent,
 ];
 
 @NgModule({

@@ -5,6 +5,7 @@ import { AppModule } from './app/app.module';
 import { environment } from './environments/environment';
 
 import * as $ from 'jquery';
+// import * as yaml from '../node_modules/json2yaml';
 
 window['$'] = $;
 window['jQuery'] = $;

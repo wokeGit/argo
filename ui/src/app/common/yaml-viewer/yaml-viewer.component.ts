@@ -5,7 +5,7 @@ import { ViewUtils } from '../view-utils';
 
 // let yaml = require('json2yaml');
 // declare let yaml = require('json2yaml');
-// import * as yaml from 'json2yaml';
+import * as yaml from 'json2yaml';
 
 @Component({
   selector: 'ax-yaml-viewer',
@@ -20,11 +20,12 @@ export class YamlViewerComponent {
 
   @Input()
   public set input(value: {template: Template, highlightedStep: string}) {
+    console.log('template', value.template, value.highlightedStep);
     if (value.template) {
       let idToTemplate = new Map<string, any>();
       this.getTemplatesMap(value.template, idToTemplate);
       let yamlString = Array.from(idToTemplate.values()).map(item => {
-        // let itemStr = yaml.stringify(item);
+        let itemStrY = yaml.stringify(item);
         let itemStr = JSON.stringify(item);
         console.log('itemStr', itemStr);
         if (value.highlightedStep) {

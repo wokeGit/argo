@@ -23,6 +23,7 @@
         "../node_modules/font-awesome/css/font-awesome.css"
       ],
       "scripts": [
+        "../node_modules/json2yaml/index.js"
       ],
       "environmentSource": "environments/environment.ts",
       "environments": {
